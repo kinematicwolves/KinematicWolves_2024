@@ -31,6 +31,12 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
   }
 
+  public static class LightingProfile {
+    public static final int candldeID = 1; //TODO: This must be configured
+    public static final double kBrightnessScalar = 1;
+    public static final int numLEDStrip = 8;
+  }
+
   public static final class SwerveProfile {
         public static final int pigeonID = 1; //TODO: Ensure that the gyro rotation is CCW+ (Counter Clockwise Positive)
 
@@ -82,13 +88,13 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.12; //TODO: This must be tuned
+        public static final double driveKP = 0.12; //TODO: This must be configured
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.32; //TODO: This must be tuned
+        public static final double driveKS = 0.32; //TODO: This must be configured
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
 
@@ -104,7 +110,7 @@ public final class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
-        public static final class Mod0 { //TODO: This must be tuned
+        public static final class Mod0 { //TODO: This must be configured
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 1;
@@ -114,7 +120,7 @@ public final class Constants {
         }
 
         /* Front Right Module - Module 1 */
-        public static final class Mod1 { //TODO: This must be tuned
+        public static final class Mod1 { //TODO: This must be configured
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 2;
@@ -124,7 +130,7 @@ public final class Constants {
         }
         
         /* Back Left Module - Module 2 */
-        public static final class Mod2 { //TODO: This must be tuned
+        public static final class Mod2 { //TODO: This must be configured
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 3;
@@ -134,7 +140,7 @@ public final class Constants {
         }
 
         /* Back Right Module - Module 3 */
-        public static final class Mod3 { //TODO: This must be tuned
+        public static final class Mod3 { //TODO: This must be configured
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 4;
@@ -144,7 +150,7 @@ public final class Constants {
         }
 
         /* Backup Moudles Specific Constants */
-        /** Backup Module 1: TODO: This must be tuned
+        /** Backup Module 1: TODO: This must be configured
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 4;
@@ -157,7 +163,7 @@ public final class Constants {
         ** Mod 3 Offset:
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0.0);
         
-        /** Backup Module 2: TODO: This must be tuned
+        /** Backup Module 2: TODO: This must be configured
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 4;
@@ -172,7 +178,7 @@ public final class Constants {
         */
     }
 
-    public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned
+    public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be configured
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;

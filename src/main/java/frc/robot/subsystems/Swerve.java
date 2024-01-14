@@ -17,12 +17,12 @@ import frc.robot.Constants.SwerveProfile;
 import frc.robot.SwerveModule;
 
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
-    public SwerveModule[] mSwerveMods;
-    public Pigeon2 gyro;
+    private SwerveDriveOdometry swerveOdometry;
+    private SwerveModule[] mSwerveMods;
+    private Pigeon2 gyro;
 
     public Swerve() {
-        gyro = new Pigeon2(SwerveProfile.pigeonID);
+        gyro = new Pigeon2(SwerveProfile.pigeonID, "canivore1");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
