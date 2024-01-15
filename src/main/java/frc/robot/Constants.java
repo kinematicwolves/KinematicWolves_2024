@@ -37,6 +37,15 @@ public final class Constants {
     public static final int numLEDStrip = 8;
   }
 
+  public static class LimelightProfile {
+    public static final double limelightVerticalAngle = 0;
+    public static final double speakerHeightInches = 0;
+    public static final double limelightHeightInches = 0;
+    public static final int aprilTagPipeline = 0;
+    public static final int visionProcessorEntry = 0;
+    public static final int driverCameraEntry = 1;
+  }
+
   public static final class SwerveProfile {
         public static final int pigeonID = 13; //TODO: Ensure that the gyro rotation is CCW+ (Counter Clockwise Positive)
 
