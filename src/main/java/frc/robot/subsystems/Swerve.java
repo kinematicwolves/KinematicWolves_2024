@@ -11,8 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants.SwerveProfile;
 import frc.robot.SwerveModule;
 
@@ -21,11 +24,12 @@ public class Swerve extends SubsystemBase {
     private SwerveModule[] mSwerveMods;
     private Pigeon2 gyro;
 
+    private Voltage voltage;
+
     public Swerve() {
         gyro = new Pigeon2(SwerveProfile.pigeonID, "canivore1");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
-
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, SwerveProfile.Mod0.constants),
             new SwerveModule(1, SwerveProfile.Mod1.constants),
@@ -119,7 +123,8 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
+            SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw().getValue()); 
         }
     }
 }
