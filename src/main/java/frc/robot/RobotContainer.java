@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.AutoTest;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -36,6 +37,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private final Arm s_Arm = new Arm();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -62,6 +64,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        
     }
 
     /**
