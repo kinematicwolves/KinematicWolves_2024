@@ -64,7 +64,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        
+        new JoystickButton(driver, XboxController.Button.kA.value)
+          .onTrue(new InstantCommand(() -> s_Arm.runArmOutput(0.2)));
     }
 
     /**
