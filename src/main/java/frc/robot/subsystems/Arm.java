@@ -13,6 +13,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.PIDGains;
 import frc.robot.Constants.ArmProfile;
@@ -86,5 +87,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
+    SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
+    SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());
   }
 }
