@@ -26,12 +26,13 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(ControllerProfile.kDriverControllerPort);
+    private final Joystick munipulator = new Joystick(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final double pivotAxis = XboxController.Axis.kRightTrigger.value;
+    private final int pivotAxis = XboxController.Axis.kLeftY.value;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -53,7 +54,7 @@ public class RobotContainer {
             )
         );
 
-        s_Arm.setDefaultCommand(new ArmPivotTest(s_Arm, pivotAxis));
+        s_Arm.setDefaultCommand(new ArmPivotTest(s_Arm, () -> -munipulator.getRawAxis(pivotAxis)));
 
         // Configure the button bindings
         configureButtonBindings();

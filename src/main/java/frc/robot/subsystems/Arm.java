@@ -35,9 +35,9 @@ public class Arm extends SubsystemBase {
   public Arm() {
     m_pivotA.restoreFactoryDefaults();
     m_pivotB.restoreFactoryDefaults();
-    m_indexor.configFactoryDefault();
-    m_shooterA.configFactoryDefault();
-    m_shooterB.configFactoryDefault();
+    // m_indexor.configFactoryDefault();
+    // m_shooterA.configFactoryDefault();
+    // m_shooterB.configFactoryDefault();
 
     m_pivotA.setInverted(false);
     m_pivotB.setInverted(true); //TODO: Ensure arm goes up
