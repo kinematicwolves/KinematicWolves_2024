@@ -30,17 +30,19 @@ public final class Constants {
     public static final int indexorID = 17; 
     public static final int shooterID_A = 18;
     public static final int shooterID_B = 19;
+    public static final int noteDetectorChannel = 0; //TODO: This must be configured
 
     public static final int kPivotCurrentLimit = 40;
     public static final double kPivotSoftLimitReverse = 0.0;
-    public static final int kPivotInitialPos = 0;
-    public static final double kArmGearRatio = (60.0 * 2.0) / 1.0;
+    public static final double kArmGearRatio = 1.0 / ((3.0 * 4.0 * 5.0) * 3.0);
     public static final double kPositionFactor = kArmGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
+    public static final double kDefaultArmOutput = 0.8;
+
     public static final PIDGains kArmPositionGains = new PIDGains(0.0, 0.0, 0.0);
 
-
+    public static final double pivotInitialPos = 0;
     public static final int neoEncoderCountsPerRev = 42;
   }
 

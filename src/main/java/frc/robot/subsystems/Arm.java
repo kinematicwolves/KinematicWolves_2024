@@ -13,6 +13,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.PIDGains;
@@ -31,16 +32,19 @@ public class Arm extends SubsystemBase {
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
+  private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
+  private boolean noteDetected = !indexorSensor.get();
+
   /** Creates a new Arm. */
   public Arm() {
     m_pivotA.restoreFactoryDefaults();
     m_pivotB.restoreFactoryDefaults();
-    // m_indexor.configFactoryDefault();
-    // m_shooterA.configFactoryDefault();
-    // m_shooterB.configFactoryDefault();
+    m_indexor.configFactoryDefault();
+    m_shooterA.configFactoryDefault();
+    m_shooterB.configFactoryDefault();
 
     m_pivotA.setInverted(false);
-    m_pivotB.setInverted(true); //TODO: Ensure arm goes up
+    m_pivotB.setInverted(true);
     m_indexor.setInverted(false);//TODO: Ensure belts run up
     m_shooterA.setInverted(false);
     m_shooterB.setInverted(true);//TODO: Ensure wheels spin outward
@@ -60,8 +64,8 @@ public class Arm extends SubsystemBase {
 
     pivotEncoderA.setPositionConversionFactor(ArmProfile.kPositionFactor);
     pivotEncoderB.setVelocityConversionFactor(ArmProfile.kVelocityFactor);
-    pivotEncoderA.setPosition(ArmProfile.kPivotInitialPos);
-    pivotEncoderB.setPosition(ArmProfile.kPivotInitialPos);
+    pivotEncoderA.setPosition(ArmProfile.pivotInitialPos);
+    pivotEncoderB.setPosition(ArmProfile.pivotInitialPos);
 
     PIDGains.setSparkMaxGains(pivotControllerA, ArmProfile.kArmPositionGains);
     PIDGains.setSparkMaxGains(pivotControllerB, ArmProfile.kArmPositionGains);
@@ -70,9 +74,26 @@ public class Arm extends SubsystemBase {
     m_pivotB.burnFlash();
   }
 
-  public void runArmOutput(double commandedOutputFraction) {
+  private double pivotEncoderCountsToDegrees(double encoderInput) {
+    double posIndegrees = (ArmProfile.kArmGearRatio * encoderInput) / 360;
+    return posIndegrees;
+  }
+
+  public void setArmOutput(double commandedOutputFraction) {
     m_pivotA.set(commandedOutputFraction);
     m_pivotB.set(commandedOutputFraction);
+  }
+
+  public void setArmPos(double commandedOutputDegree) {
+    if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) == commandedOutputDegree) {
+      setArmOutput(0);
+    }
+    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) < commandedOutputDegree) {
+      setArmOutput(ArmProfile.kDefaultArmOutput);
+    }
+    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) > commandedOutputDegree) {
+      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5); // 40% output
+    }
   }
 
   public void runIndexorOuput(double commandedOutputFraction) {
@@ -87,6 +108,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Note Collected", noteDetected);
+    
     SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
     SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
     SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());

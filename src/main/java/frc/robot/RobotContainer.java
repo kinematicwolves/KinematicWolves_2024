@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.AutoTest;
-import frc.robot.commands.ArmPivotTest;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
@@ -54,8 +53,6 @@ public class RobotContainer {
             )
         );
 
-        s_Arm.setDefaultCommand(new ArmPivotTest(s_Arm, () -> -munipulator.getRawAxis(pivotAxis)));
-
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -69,9 +66,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-
-        new JoystickButton(driver, XboxController.Button.kA.value)
-          .onTrue(new InstantCommand(() -> s_Arm.runArmOutput(0)));
     }
 
     /**
