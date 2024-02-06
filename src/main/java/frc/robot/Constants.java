@@ -33,7 +33,8 @@ public final class Constants {
     public static final int noteDetectorChannel = 0; //TODO: This must be configured
 
     public static final int kPivotCurrentLimit = 40;
-    public static final double kPivotSoftLimitReverse = 0.0;
+    public static final double kPivotSoftLimitRvs = 0.0;
+    public static final double kPivotSoftLiimitFwd = 5702398.18;
     public static final double kArmGearRatio = 1.0 / ((3.0 * 4.0 * 5.0) * 3.0);
     public static final double kPositionFactor = kArmGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;

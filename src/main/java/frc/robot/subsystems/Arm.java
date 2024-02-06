@@ -53,11 +53,13 @@ public class Arm extends SubsystemBase {
     m_pivotB.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
 
     m_pivotA.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, false);
+    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotB.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, false);
-    m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitReverse);
-    m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitReverse);
+    m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
+    m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
+    m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
+    m_pivotB.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
 
     m_pivotA.setIdleMode(IdleMode.kBrake);
     m_pivotB.setIdleMode(IdleMode.kBrake);
@@ -72,6 +74,8 @@ public class Arm extends SubsystemBase {
 
     m_pivotA.burnFlash();
     m_pivotB.burnFlash();
+
+    setArmPos(ArmProfile.pivotInitialPos);
   }
 
   private double pivotEncoderCountsToDegrees(double encoderInput) {
@@ -85,14 +89,17 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmPos(double commandedOutputDegree) {
-    if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) == commandedOutputDegree) {
+    double lowerLimit = commandedOutputDegree - 0.1;
+    double upperLimit = commandedOutputDegree + 0.1;
+    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution());
+    if (lowerLimit <= currentAngle && currentAngle <= upperLimit) {
       setArmOutput(0);
     }
-    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) < commandedOutputDegree) {
+    else if (currentAngle < lowerLimit) {
       setArmOutput(ArmProfile.kDefaultArmOutput);
     }
-    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution()) > commandedOutputDegree) {
-      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5); // 40% output
+    else {
+      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5);
     }
   }
 
