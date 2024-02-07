@@ -71,6 +71,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.runIndexorOuput(0.5)))
         .onFalse(new InstantCommand(() -> s_Arm.runIndexorOuput(0)));
 
+        new JoystickButton(munipulator, XboxController.Button.kB.value)
+        .onTrue(new InstantCommand(() -> s_Arm.runShooterOutput(0.5)))
+        .onFalse(new InstantCommand(() -> s_Arm.runShooterOutput(0)));
+
         // new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value)
         // .onTrue(new InstantCommand(() -> m_gripper.openGripper()))
         // .onFalse(new InstantCommand(() -> m_gripper.closeGripper()));
