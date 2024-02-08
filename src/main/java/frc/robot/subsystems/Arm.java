@@ -58,7 +58,7 @@ public class Arm extends SubsystemBase {
     m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
     m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
-    m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
+    m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd); //TODO: Ensure foward limit is at 90 degrees
     m_pivotB.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
 
     m_pivotA.setIdleMode(IdleMode.kBrake);
@@ -92,22 +92,22 @@ public class Arm extends SubsystemBase {
     double lowerLimit = commandedOutputDegree - 0.1;
     double upperLimit = commandedOutputDegree + 0.1;
     double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution());
-    if (lowerLimit <= currentAngle && currentAngle <= upperLimit) {
+    if ((lowerLimit <= currentAngle) && (currentAngle <= upperLimit)) {
       setArmOutput(0);
     }
     else if (currentAngle < lowerLimit) {
       setArmOutput(ArmProfile.kDefaultArmOutput);
     }
     else {
-      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5);
+      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5); // 40% negitive output
     }
   }
 
-  public void runIndexorOuput(double commandedOutputFraction) {
+  public void setIndexorOuput(double commandedOutputFraction) {
     m_indexor.set(commandedOutputFraction);
   }
 
-  public void runShooterOutput(double commandedOutputFraction) {
+  public void setShooterOutput(double commandedOutputFraction) {
     m_shooterA.set(commandedOutputFraction);
     m_shooterB.set(commandedOutputFraction);
   } 

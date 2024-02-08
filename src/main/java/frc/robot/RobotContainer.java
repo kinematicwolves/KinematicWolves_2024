@@ -67,17 +67,19 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        new JoystickButton(munipulator, XboxController.Button.kA.value)
-        .onTrue(new InstantCommand(() -> s_Arm.runIndexorOuput(0.5)))
-        .onFalse(new InstantCommand(() -> s_Arm.runIndexorOuput(0)));
+        new JoystickButton(munipulator, XboxController.Button.kA.value) // A -> Run Indexor
+        .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(0.5)))
+        .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
 
-        new JoystickButton(munipulator, XboxController.Button.kB.value)
-        .onTrue(new InstantCommand(() -> s_Arm.runShooterOutput(0.5)))
-        .onFalse(new InstantCommand(() -> s_Arm.runShooterOutput(0)));
+        new JoystickButton(munipulator, XboxController.Button.kB.value) // B -> Run Shooter
+        .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(0.5)))
+        .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
 
-        // new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value)
-        // .onTrue(new InstantCommand(() -> m_gripper.openGripper()))
-        // .onFalse(new InstantCommand(() -> m_gripper.closeGripper()));
+        new JoystickButton(munipulator, XboxController.Button.kY.value) // Y -> Run Arm to 30 Degrees
+        .onTrue(new InstantCommand(() -> s_Arm.setArmPos(30)));
+
+        new JoystickButton(munipulator, XboxController.Button.kX.value) // X -> Run Arm to Inital Pos
+        .onTrue(new InstantCommand(() -> s_Arm.setArmPos(0)));
     }
 
     /**
