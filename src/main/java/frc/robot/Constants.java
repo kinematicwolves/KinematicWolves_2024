@@ -14,21 +14,37 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
+import frc.lib.util.PIDGains;
 import frc.lib.util.SwerveModuleConstants;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
 
   public static class ControllerProfile {
     public static final int kDriverControllerPort = 0;
     public static final double stickDeadband = 0.1;
+  }
+
+  public static class ArmProfile {
+    public static final int pivotMotorID_A = 15;
+    public static final int pivotMotorID_B = 16;
+    public static final int indexorID = 17; 
+    public static final int shooterID_A = 18;
+    public static final int shooterID_B = 19;
+    public static final int noteDetectorChannel = 0; //TODO: This must be configured
+
+    public static final int kPivotCurrentLimit = 40;
+    public static final double kPivotSoftLimitRvs = 0.0;
+    public static final double kPivotSoftLiimitFwd = 5702398.18;
+    public static final double kArmGearRatio = 1.0 / ((3.0 * 4.0 * 5.0) * 3.0);
+    public static final double kPositionFactor = kArmGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
+    public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
+    public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
+    public static final double kDefaultArmOutput = 0.8;
+
+    public static final PIDGains kArmPositionGains = new PIDGains(0.0, 0.0, 0.0);
+
+    public static final double pivotInitialPos = 0;
+    public static final int neoEncoderCountsPerRev = 42;
   }
 
   public static class LightingProfile {
