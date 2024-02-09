@@ -37,6 +37,12 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
+    /* These are fine to include for testing. However, before comp, save all these settings on the motor drivers, then disable these commands here.
+    The failure mode is sometimes these settings do not stick, for whatever reason. I've seen this cause motor driver directions, for example, to not invert correctly.
+    These can simply be commented out when running the robot at a competition.
+    */
+    //TODO: Comment out motor driver settings before comp. 
+    //TODO: Use Rev Hardware Client to setup these parameters on the motor driver bfeore comp.
     m_pivotA.restoreFactoryDefaults();
     m_pivotB.restoreFactoryDefaults();
     m_indexor.configFactoryDefault();
