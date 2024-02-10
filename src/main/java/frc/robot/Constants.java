@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
+import frc.lib.util.PIDGains;
 import frc.lib.util.SwerveModuleConstants;
 
 /**
@@ -29,6 +30,26 @@ public final class Constants {
   public static class ControllerProfile {
     public static final int kDriverControllerPort = 0;
     public static final double stickDeadband = 0.1;
+  }
+
+  public static class IntakeProfile {
+    public static final int wristID = 20;
+    public static final int overRoller = 21;
+    public static final int underRoller = 22;
+
+    public static final int kWristCurrentLimit = 40;
+    public static final int kRollerCurrentLimit = 40;
+
+    public static final int kInitialPos = 0;
+    public static final int kDeployedPos = 1000; //TODO: This must be configured
+
+    public static final int neoEncoderCountsPerRev = 42;    
+    public static final double kWristGearRatio = 1 / (35 * 1.4);
+    public static final double kPositionFactor = kWristGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
+    public static final double kVelocityFactor = kWristGearRatio * 2.0 * Math.PI / 60.0;
+    public static final double kArmFreeSpeed = 11000 * kVelocityFactor;
+
+    public static final PIDGains kWristPositionGains = new PIDGains(0.0, 0.0, 0.0);
   }
 
   public static class LightingProfile {
