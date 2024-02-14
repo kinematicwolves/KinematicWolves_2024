@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.Auto1;
-import frc.robot.autos.AutoTest;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -25,6 +25,7 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(ControllerProfile.kDriverControllerPort);
+    private final Joystick manipulator = new Joystick(ControllerProfile.kManipulatorControllerPort);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -37,6 +38,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private final Intake s_Intake = new Intake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -63,6 +65,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+
+        new JoystickButton(manipulator, XboxController.Button.kB.value) // B -> Run Shooter
+        .onTrue(new InstantCommand(() -> s_Intake.setInnerRollerOutput(.5)))
+        .onFalse(new InstantCommand(() -> s_Intake.setInnerRollerOutput(0)));
+
     }
 
     /**

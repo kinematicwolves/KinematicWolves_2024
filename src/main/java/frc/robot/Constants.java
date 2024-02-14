@@ -29,13 +29,14 @@ public final class Constants {
 
   public static class ControllerProfile {
     public static final int kDriverControllerPort = 0;
+    public static final int kManipulatorControllerPort = 1;
     public static final double stickDeadband = 0.1;
   }
 
   public static class IntakeProfile {
     public static final int wristID = 20;
-    public static final int overRoller = 21;
-    public static final int underRoller = 22;
+    public static final int outerRoller = 21;
+    public static final int innerRoller = 22;
 
     public static final int kWristCurrentLimit = 40;
     public static final int kRollerCurrentLimit = 40;

@@ -24,29 +24,29 @@ import frc.robot.Constants.IntakeProfile;
 
 public class Intake extends SubsystemBase {
   private CANSparkMax m_wrist = new CANSparkMax(IntakeProfile.wristID, MotorType.kBrushless);
-  private WPI_TalonSRX m_overRoller = new WPI_TalonSRX(IntakeProfile.overRoller);
-  private WPI_TalonSRX m_underRoller = new WPI_TalonSRX(IntakeProfile.underRoller);
+  private WPI_TalonSRX m_outerRoller = new WPI_TalonSRX(IntakeProfile.outerRoller);
+  private WPI_TalonSRX m_innerRoller = new WPI_TalonSRX(IntakeProfile.innerRoller);
 
   private RelativeEncoder wristEncoder = m_wrist.getEncoder(SparkRelativeEncoder.Type.kHallSensor, IntakeProfile.neoEncoderCountsPerRev);
 
   private SparkPIDController wristController = m_wrist.getPIDController();
-
+       
   private TimeOfFlight s_DistanceSensor = new TimeOfFlight(0);
 
   /** Creates a new Intake. */
   public Intake() {
     m_wrist.restoreFactoryDefaults();
-    m_overRoller.configFactoryDefault();
-    m_underRoller.configFactoryDefault();
+    m_outerRoller.configFactoryDefault();
+    m_innerRoller.configFactoryDefault();
 
     m_wrist.clearFaults();
 
     m_wrist.setInverted(false); //TODO: Ensure intake moves outward
-    m_overRoller.setInverted(false); //TODO: Ensure roller spins inward
-    m_underRoller.setInverted(false); //TODO: Ensure roller spins inward
+    m_outerRoller.setInverted(false); //TODO: Ensure roller spins inward
+    m_innerRoller.setInverted(false); //TODO: Ensure roller spins inward
 
     m_wrist.setSmartCurrentLimit(IntakeProfile.kWristCurrentLimit);
-    m_overRoller.configPeakCurrentLimit(IntakeProfile.kRollerCurrentLimit);
+    m_outerRoller.configPeakCurrentLimit(IntakeProfile.kRollerCurrentLimit);
 
     m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_wrist.enableSoftLimit(SoftLimitDirection.kForward, false);
@@ -85,8 +85,18 @@ public class Intake extends SubsystemBase {
     }
     else {
       m_wrist.set(0.2);
+      enableIntakePlus(false);
     }
   }
+
+  public void setInnerRollerOutput(double commandedOutputFraction) {
+    m_innerRoller.set(commandedOutputFraction);
+  } 
+
+  public void setOuterOutput(double commandedOutputFraction) {
+    m_outerRoller.set(commandedOutputFraction);
+
+  } 
 
   public void enableIntakePlus(boolean enable) {
     if (!enable) {
