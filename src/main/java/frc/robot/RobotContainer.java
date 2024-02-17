@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.Auto1;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.WristControlTest;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
@@ -54,6 +55,8 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+
+        s_Intake.setDefaultCommand(new WristControlTest(s_Intake, () -> -munipulator.getRawAxis(pivotAxis)));
 
         // Configure the button bindings
         configureButtonBindings();

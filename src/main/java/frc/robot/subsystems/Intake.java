@@ -64,6 +64,10 @@ public class Intake extends SubsystemBase {
     m_wrist.burnFlash();
   }
 
+  public void setWristOutput(double commandedOutputFraction) {
+    m_wrist.set(commandedOutputFraction);
+  }
+
   private void deployIntake() {
     double encoderCounts = wristEncoder.getCountsPerRevolution();
     double deployedPos = 1000;
@@ -95,7 +99,6 @@ public class Intake extends SubsystemBase {
 
   public void setOuterOutput(double commandedOutputFraction) {
     m_outerRoller.set(commandedOutputFraction);
-
   } 
 
   public void enableIntakePlus(boolean enable) {
