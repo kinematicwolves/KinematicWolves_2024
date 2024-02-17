@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.Auto1;
-import frc.robot.autos.AutoTest;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
 
@@ -41,6 +41,7 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Arm s_Arm = new Arm();
+    private final Intake s_Intake = new Intake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -68,6 +69,11 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
+        new JoystickButton(munipulator, XboxController.Button.kY.value) 
+        .onTrue(new InstantCommand(() -> s_Intake.setInnerRollerOutput(.5)))
+        .onFalse(new InstantCommand(() -> s_Intake.setInnerRollerOutput(0)));
+
+
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A -> Run Indexor
         .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(0.5)))
         .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
@@ -76,11 +82,11 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(0.5)))
         .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
 
-        new JoystickButton(munipulator, XboxController.Button.kY.value) // Y -> Run Arm to 30 Degrees
-        .onTrue(new InstantCommand(() -> s_Arm.setArmPos(30)));
+        // new JoystickButton(munipulator, XboxController.Button.kY.value) // Y -> Run Arm to 30 Degrees
+        // .onTrue(new InstantCommand(() -> s_Arm.setArmPos(30)));
 
-        new JoystickButton(munipulator, XboxController.Button.kX.value) // X -> Run Arm to Inital Pos
-        .onTrue(new InstantCommand(() -> s_Arm.setArmPos(0)));
+        // new JoystickButton(munipulator, XboxController.Button.kX.value) // X -> Run Arm to Inital Pos
+        // .onTrue(new InstantCommand(() -> s_Arm.setArmPos(0)));
     }
 
     /**
