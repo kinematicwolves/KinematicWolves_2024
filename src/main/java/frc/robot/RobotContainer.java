@@ -70,7 +70,7 @@ public class RobotContainer {
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        .onTrue(new IntakeNote(s_Intake, s_Arm));
+        .whileTrue(new IntakeNote(s_Intake, s_Arm));
     }
 
     /**
