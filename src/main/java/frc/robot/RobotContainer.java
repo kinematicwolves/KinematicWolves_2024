@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.Auto1;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ShootNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
@@ -36,6 +37,7 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
+
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
@@ -73,6 +75,8 @@ public class RobotContainer {
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm));
+        new JoystickButton(munipulator, XboxController.Axis.kRightTrigger.value) // RT = Shoot
+        .whileTrue(new ShootNote(s_Swerve, s_Vision, s_Intake, s_Arm));
     }
 
     /**

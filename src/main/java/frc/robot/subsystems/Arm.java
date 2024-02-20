@@ -16,6 +16,7 @@ import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.math.LinearInterpolation;
 import frc.lib.util.PIDGains;
 import frc.robot.Constants.ArmProfile;
 
@@ -78,14 +79,13 @@ public class Arm extends SubsystemBase {
     setArmPos(ArmProfile.pivotInitialPos);
   }
 
+  public boolean isNoteDetected() {
+    return noteDetected;
+  }
+
   private double pivotEncoderCountsToDegrees(double encoderInput) {
     double posIndegrees = (ArmProfile.kArmGearRatio * encoderInput) / 360;
     return posIndegrees;
-  }
-
-  public void setArmOutput(double commandedOutputFraction) {
-    m_pivotA.set(commandedOutputFraction);
-    m_pivotB.set(commandedOutputFraction);
   }
 
   public void setArmPos(double commandedOutputDegree) {
@@ -103,6 +103,41 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  private double getPivotDegreeForDistance(double targetdistance){
+    // setPivotAngle(distance);
+    double requiredDegree = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmDegreeArray, targetdistance);
+    return requiredDegree;
+  }
+
+  public void prepareToShoot(Swerve s_Swerve, Vision s_Vision, Intake s_Intake) {
+    setShooterOutput(1);
+    if (s_Vision.LinedUpWithSpeaker()) {
+      s_Intake.explodeForShooter();
+    }
+  }
+
+  public void fireAtTarget(Vision s_Vision) {
+    double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
+    double lowerLimit = commandedOutputDegree - 0.1;
+    double upperLimit = commandedOutputDegree + 0.1;
+    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution());
+    if ((lowerLimit <= currentAngle) && (currentAngle <= upperLimit)) {
+      setArmOutput(0);
+      setIndexorOuput(1);
+    }
+    else if (currentAngle < lowerLimit) {
+      setArmOutput(ArmProfile.kArmDefaultOutput);
+    }
+    else {
+      setArmOutput(ArmProfile.kArmDefaultOutput * -0.4); // 32% negitive output
+    }
+  }
+
+  public void setArmOutput(double commandedOutputFraction) {
+    m_pivotA.set(commandedOutputFraction);
+    m_pivotB.set(commandedOutputFraction);
+  }
+
   public void setIndexorOuput(double commandedOutputFraction) {
     m_indexor.set(commandedOutputFraction);
   }
@@ -111,10 +146,6 @@ public class Arm extends SubsystemBase {
     m_shooterA.set(commandedOutputFraction);
     m_shooterB.set(commandedOutputFraction);
   } 
-
-  public boolean isNoteDetected() {
-    return noteDetected;
-  }
 
   @Override
   public void periodic() {

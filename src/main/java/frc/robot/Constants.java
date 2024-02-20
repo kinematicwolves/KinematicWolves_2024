@@ -47,6 +47,14 @@ public final class Constants {
 
     public static final double pivotInitialPos = 0;
     public static final int neoEncoderCountsPerRev = 42;
+
+    // Tables for arm degree vs distance
+    public static final double[] ArmDegreeArray = {
+        0, 1, 2
+    }; 
+    public static final double[] TargetDistanceArray = {
+        0, 1, 2
+    };
   }
 
   public static class IntakeProfile {
@@ -85,6 +93,7 @@ public final class Constants {
     public static final int aprilTagPipeline = 0;
     public static final int visionProcessorEntry = 0;
     public static final int driverCameraEntry = 1;
+    public static final int alignWindow = 3;
   }
 
   public static final class SwerveProfile {

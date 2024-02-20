@@ -106,7 +106,7 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public void disableIntake(Arm s_Arm) {
+  public void resetIntake(Arm s_Arm) {
     double encoderCounts = wristEncoder.getCountsPerRevolution();
     double initialPos = 0;
     double upperLimit = initialPos + 10;
@@ -129,11 +129,25 @@ public class Intake extends SubsystemBase {
 
   public void enableIntake(Arm s_Arm) {
     if (s_Arm.isNoteDetected() == true) {
-      disableIntake(s_Arm);
+      resetIntake(s_Arm);
     }
     else {
       deployIntake(s_Arm);
       s_Arm.setShooterOutput(ArmProfile.kIndexorDefaultOutput);
+    }
+  }
+
+  public void explodeForShooter() {
+    double encoderCounts = wristEncoder.getCountsPerRevolution();
+    double deployedPos = 2000;
+    double lowerLimit = deployedPos + 10;
+    if (encoderCounts >= lowerLimit) {
+      setWristOutput(0);
+      m_wrist.setIdleMode(IdleMode.kCoast);
+      intkakeDeployed = true;
+    }
+    else {
+      m_wrist.set(0.3);
     }
   }
 

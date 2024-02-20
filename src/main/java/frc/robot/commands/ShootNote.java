@@ -7,32 +7,41 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
 
-public class IntakeNote extends Command {
+public class ShootNote extends Command {
+  private Swerve s_Swerve;
+  private Vision s_Vision;
   private Intake s_Intake;
   private Arm s_Arm;
 
-  /** Creates a new IntakeControl. */
-  public IntakeNote(Intake intake, Arm arm) {
+  /** Creates a new ShootNote. */
+  public ShootNote(Swerve swerve, Vision vision, Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
+    s_Swerve = swerve;
+    s_Vision = vision;
     s_Intake = intake;
     s_Arm = arm;
-    addRequirements(s_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    s_Swerve.rotateDrivetrainToTarget(s_Vision);
+    s_Arm.prepareToShoot(s_Swerve, s_Vision, s_Intake);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.enableIntake(s_Arm);
+    s_Arm.fireAtTarget(s_Vision);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    s_Arm.setArmPos(0);
     s_Intake.resetIntake(s_Arm);
   }
 
