@@ -96,10 +96,10 @@ public class Arm extends SubsystemBase {
       setArmOutput(0);
     }
     else if (currentAngle < lowerLimit) {
-      setArmOutput(ArmProfile.kDefaultArmOutput);
+      setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
-      setArmOutput(ArmProfile.kDefaultArmOutput * -0.5); // 40% negitive output
+      setArmOutput(ArmProfile.kArmDefaultOutput * -0.5); // 40% negitive output
     }
   }
 
@@ -112,10 +112,14 @@ public class Arm extends SubsystemBase {
     m_shooterB.set(commandedOutputFraction);
   } 
 
+  public boolean isNoteDetected() {
+    return noteDetected;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Note Collected", noteDetected);
+    SmartDashboard.putBoolean("Note Collected", isNoteDetected());
     
     SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
     SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());

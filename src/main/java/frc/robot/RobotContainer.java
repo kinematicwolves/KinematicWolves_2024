@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.autos.Auto1;
+import frc.robot.commands.IntakeNote;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.WristControlTest;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Swerve;
@@ -33,7 +33,6 @@ public class RobotContainer {
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int pivotAxis = XboxController.Axis.kLeftY.value;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -55,9 +54,6 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-
-        s_Intake.setDefaultCommand(new WristControlTest(s_Intake, () -> -munipulator.getRawAxis(pivotAxis)));
-
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -70,26 +66,11 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
 
-        new JoystickButton(munipulator, XboxController.Button.kY.value) 
-        .onTrue(new InstantCommand(() -> s_Intake.setInnerRollerOutput(.5)))
-        .onFalse(new InstantCommand(() -> s_Intake.setInnerRollerOutput(0)));
-
-
-        new JoystickButton(munipulator, XboxController.Button.kA.value) // A -> Run Indexor
-        .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(0.5)))
-        .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
-
-        new JoystickButton(munipulator, XboxController.Button.kB.value) // B -> Run Shooter
-        .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(0.5)))
-        .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
-
-        // new JoystickButton(munipulator, XboxController.Button.kY.value) // Y -> Run Arm to 30 Degrees
-        // .onTrue(new InstantCommand(() -> s_Arm.setArmPos(30)));
-
-        // new JoystickButton(munipulator, XboxController.Button.kX.value) // X -> Run Arm to Inital Pos
-        // .onTrue(new InstantCommand(() -> s_Arm.setArmPos(0)));
+        /* Manipulator Buttons */
+        new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
+        .onTrue(new IntakeNote(s_Intake, s_Arm));
     }
 
     /**

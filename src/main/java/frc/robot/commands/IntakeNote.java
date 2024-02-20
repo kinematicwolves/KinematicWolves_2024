@@ -4,22 +4,19 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ControllerProfile;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
-public class WristControlTest extends Command {
-  /** Creates a new WristControlTest. */
+public class IntakeNote extends Command {
   private Intake s_Intake;
-  private DoubleSupplier pivotSup;
+  private Arm s_Arm;
 
-  public WristControlTest(Intake intake, DoubleSupplier pivotSup) {
+  /** Creates a new IntakeControl. */
+  public IntakeNote(Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
-    this.pivotSup = pivotSup;
+    s_Arm = arm;
     addRequirements(s_Intake);
   }
 
@@ -30,13 +27,14 @@ public class WristControlTest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pivotVal = MathUtil.applyDeadband(pivotSup.getAsDouble(), ControllerProfile.stickDeadband);
-    s_Intake.setWristOutput(pivotVal);
+    s_Intake.enableIntake(s_Arm);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    s_Intake.disableIntake(s_Arm);
+  }
 
   // Returns true when the command should end.
   @Override

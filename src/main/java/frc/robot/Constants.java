@@ -40,7 +40,8 @@ public final class Constants {
     public static final double kPositionFactor = kArmGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
-    public static final double kDefaultArmOutput = 0.8;
+    public static final double kArmDefaultOutput = 0.8;
+    public static final double kIndexorDefaultOutput = 1;
 
     public static final PIDGains kArmPositionGains = new PIDGains(0.0, 0.0, 0.0);
 
@@ -66,6 +67,9 @@ public final class Constants {
     public static final double kArmFreeSpeed = 11000 * kVelocityFactor;
 
     public static final PIDGains kWristPositionGains = new PIDGains(0.0, 0.0, 0.0);
+
+    public static final double kOuterDefaultOutput = 1;
+    public static final double kInnerDefaultOutput = 1;
   }
 
   public static class LightingProfile {
@@ -146,7 +150,7 @@ public final class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Module Specific Constants */
-        /* Front Left Module - Module 0 */
+        /* Front Left Module - Module 1 */
         public static final class Mod1 { //TODO: This must be configured
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
@@ -156,7 +160,7 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
-        /* Front Right Module - Module 1 */
+        /* Front Right Module - Module 2 */
         public static final class Mod2 { //TODO: This must be configured
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
@@ -166,7 +170,7 @@ public final class Constants {
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
-        /* Back Left Module - Module 2 */
+        /* Back Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be configured
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
