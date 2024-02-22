@@ -96,6 +96,13 @@ public final class Constants {
     public static final int alignWindow = 3;
   }
 
+  public static class ClimberProfile {
+    public static final int climberA_ID = 14; //TODO: Must configure CAN id's
+    public static final int climberB_ID = 15;
+
+    public static final int climberCurrentLimit = 40;
+  }
+
   public static final class SwerveProfile {
         public static final int pigeonID = 13; //TODO: Ensure that the gyro rotation is CCW+ (Counter Clockwise Positive)
 
@@ -131,7 +138,7 @@ public final class Constants {
         public static final double angleCurrentThresholdTime = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveCurrentLimit = 35;
+        public static final int driveCurrentLimit = 40;
         public static final int driveCurrentThreshold = 60;
         public static final double driveCurrentThresholdTime = 0.1;
         public static final boolean driveEnableCurrentLimit = true;

@@ -3,12 +3,14 @@ package frc.robot;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import frc.robot.Constants.ClimberProfile;
 import frc.robot.Constants.SwerveProfile;
 
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
+    public TalonFXConfiguration climberFXConfig = new TalonFXConfiguration();
 
     public CTREConfigs(){
         /** Swerve CANCoder Configuration */
@@ -47,6 +49,8 @@ public final class CTREConfigs {
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimit = SwerveProfile.driveCurrentLimit;
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentThreshold = SwerveProfile.driveCurrentThreshold;
         swerveDriveFXConfig.CurrentLimits.SupplyTimeThreshold = SwerveProfile.driveCurrentThresholdTime;
+
+        climberFXConfig.CurrentLimits.SupplyCurrentLimit = ClimberProfile.
 
         /* PID Config */
         swerveDriveFXConfig.Slot0.kP = SwerveProfile.driveKP;
