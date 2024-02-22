@@ -29,7 +29,7 @@ import frc.robot.subsystems.Vision;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(ControllerProfile.kDriverControllerPort);
-    private final Joystick munipulator = new Joystick(1);
+    private final Joystick munipulator = new Joystick(ControllerProfile.kManipulatorControllerPort);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;

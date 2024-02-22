@@ -12,7 +12,7 @@ public class LinearInterpolation{
                 break;
             }
             else {
-                upperIndex = 1; // TODO: What if distance is outside the table?
+                upperIndex = 1;
             }
         }
         return upperIndex;
@@ -23,12 +23,12 @@ public class LinearInterpolation{
     }
 
     public static double linearInterpolation(double distance_arr[], double y[], double distance) {
-        // In case distance is below table bounds, use lowest speed
+        // In case distance is below table bounds, use lowest point
         if (distance < distance_arr[0]){
             return y[0];
         }
 
-        // In case distance is above table bounds, use highest speed
+        // In case distance is above table bounds, use highest point
         if (distance > distance_arr[distance_arr.length - 1]){
             return y[y.length - 1];
         }
