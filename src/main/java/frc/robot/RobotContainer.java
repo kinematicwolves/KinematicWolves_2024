@@ -77,9 +77,9 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
 
         /* Manipulator Buttons */
-        // new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        // .whileTrue(new IntakeNote(s_Intake, s_Arm));
-        new JoystickButton(munipulator, XboxController.Axis.kRightTrigger.value) // RT = Shoot
+        new JoystickButton(driver, XboxController.Button.kA.value) // A = Intake 
+        .whileTrue(new IntakeNote(s_Intake, s_Arm));
+        new JoystickButton(driver, XboxController.Button.kB.value) // RT = Shoot
         .whileTrue(new ShootNote(s_Swerve, s_Vision, s_Intake, s_Arm));
 
         /* Technition Buttons */

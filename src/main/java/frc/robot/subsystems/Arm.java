@@ -116,7 +116,7 @@ public class Arm extends SubsystemBase {
 
   public void fireAtTarget(Vision s_Vision) {
     //double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
-    double commandedOutputDegree = 5; //TODO: Must be configured for testing/showcasing
+    double commandedOutputDegree = 4000; //TODO: Must be configured for testing/showcasing
     double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
     double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
     if ((lowerLimit <= pivotEncoderCountsToDegrees(pivotEncoderA.getPosition())) && (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= upperLimit)) {
