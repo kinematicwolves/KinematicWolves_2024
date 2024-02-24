@@ -17,7 +17,6 @@ public class IntakeNote extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
-    addRequirements(s_Intake);
   }
 
   // Called when the command is initially scheduled.

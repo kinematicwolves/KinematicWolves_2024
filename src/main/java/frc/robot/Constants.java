@@ -22,38 +22,45 @@ public final class Constants {
   public static class ControllerProfile {
     public static final int kDriverControllerPort = 0;
     public static final int kManipulatorControllerPort = 1;
+    public static final int kTechnitionControllerPort = 2;
     public static final double stickDeadband = 0.1;
   }
 
   public static class ArmProfile {
     public static final int pivotMotorID_A = 15;
     public static final int pivotMotorID_B = 16;
-    public static final int indexorID = 17; 
+    public static final int indexorID = 17;
     public static final int shooterID_A = 18;
     public static final int shooterID_B = 19;
     public static final int noteDetectorChannel = 0; //TODO: This must be configured
 
     public static final int kPivotCurrentLimit = 40;
+
     public static final double kPivotSoftLimitRvs = 0.0;
-    public static final double kPivotSoftLiimitFwd = 5702398.18;
-    public static final double kArmGearRatio = 1.0 / ((3.0 * 4.0 * 5.0) * 3.0);
+    public static final double kPivotSoftLiimitFwd = 23830;
+
+    public static final double pivotInitialPos = 0;
+    public static final double kPivotDegreeThreshold = 0.1;
+
+    public static final double kArmGearRatio = ((3.0 * 4.0 * 5.0) * 3.0) / 1;
+
+    public static final int neoEncoderCountsPerRev = 42;
     public static final double kPositionFactor = kArmGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
-    public static final double kArmDefaultOutput = 0.8;
+
+    public static final double kArmDefaultOutput = 0.5;
     public static final double kIndexorDefaultOutput = 1;
+    public static final double kShooterDefaultOutput = 1;
 
-    public static final PIDGains kArmPositionGains = new PIDGains(0.0, 0.0, 0.0);
-
-    public static final double pivotInitialPos = 0;
-    public static final int neoEncoderCountsPerRev = 42;
+    public static final PIDGains kArmPositionGains = new PIDGains(0.01, 0.0, 0.0);
 
     // Tables for arm degree vs distance
     public static final double[] ArmDegreeArray = {
-        0, 1, 2
+        1, 2, 3
     }; 
     public static final double[] TargetDistanceArray = {
-        0, 1, 2
+        4, 5, 6
     };
   }
 
@@ -66,34 +73,38 @@ public final class Constants {
     public static final int kRollerCurrentLimit = 40;
 
     public static final int kInitialPos = 0;
-    public static final int kDeployedPos = 1000; //TODO: This must be configured
+    public static final double kDeployedPos = 10053;
+    public static final double kWristThreshhold = 200; //TODO: This must be configured
+    public static final double kDeployedLowerLimitPos = kDeployedPos - kWristCurrentLimit;
+    public static final double kInitailUpperLimitPos = kInitialPos + kWristThreshhold;
+    public static final double kPlusSafeZone = 1000; // Milimeters TODO: This must be configured
 
     public static final int neoEncoderCountsPerRev = 42;    
-    public static final double kWristGearRatio = 1 / (35 * 1.4);
+    public static final double kWristGearRatio = 70 / 1;
     public static final double kPositionFactor = kWristGearRatio * 2.0 * Math.PI; //multiply SM value by this number and get arm position in radians
     public static final double kVelocityFactor = kWristGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 11000 * kVelocityFactor;
 
-    public static final PIDGains kWristPositionGains = new PIDGains(0.0, 0.0, 0.0);
+    public static final PIDGains kWristPositionGains = new PIDGains(0.01, 0.0, 0.0); //TODO: This must be configured
 
     public static final double kOuterDefaultOutput = 1;
     public static final double kInnerDefaultOutput = 1;
   }
 
   public static class LightingProfile {
-    public static final int candldeID = 14; //TODO: This must be configured
+    public static final int candldeID = 23;
     public static final double kBrightnessScalar = 1;
-    public static final int numLEDStrip = 8;
+    public static final int numLEDStrip = 15; //TODO: Must be configured
   }
 
-  public static class LimelightProfile {
+  public static class LimelightProfile { //TODO: All must be configured
     public static final double limelightVerticalAngle = 0;
     public static final double speakerHeightInches = 0;
     public static final double limelightHeightInches = 0;
     public static final int aprilTagPipeline = 0;
     public static final int visionProcessorEntry = 0;
     public static final int driverCameraEntry = 1;
-    public static final int alignWindow = 3;
+    public static final int alignWindow = 2;
   }
 
   public static class ClimberProfile {
@@ -166,9 +177,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4.99;
+        public static final double maxSpeed = 4; // TODO: Must be configured. 4.99m/s before weight (Currently Theoretical)
         /** Radians per Second */
-        public static final double maxAngularVelocity = 13.99; // Theoretical
+        public static final double maxAngularVelocity = 13; // TODO: Must be configured. 13.99r/s (Currently Theoretical)
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -176,7 +187,7 @@ public final class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 1 */
-        public static final class Mod1 { //TODO: This must be configured
+        public static final class Mod1 {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 3;
@@ -186,7 +197,7 @@ public final class Constants {
         }
 
         /* Front Right Module - Module 2 */
-        public static final class Mod2 { //TODO: This must be configured
+        public static final class Mod2 {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 6;
@@ -196,7 +207,7 @@ public final class Constants {
         }
         
         /* Back Left Module - Module 0 */
-        public static final class Mod0 { //TODO: This must be configured
+        public static final class Mod0 {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 9;
@@ -206,7 +217,7 @@ public final class Constants {
         }
 
         /* Back Right Module - Module 3 */
-        public static final class Mod3 { //TODO: This must be configured
+        public static final class Mod3 {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 12;
@@ -244,7 +255,7 @@ public final class Constants {
         */
     }
 
-    public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be configured
+    public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
