@@ -26,12 +26,14 @@ public class Intake extends SubsystemBase {
   private WPI_TalonSRX m_innerRoller = new WPI_TalonSRX(IntakeProfile.innerRoller);
 
   private RelativeEncoder wristEncoder = m_wrist.getEncoder(SparkRelativeEncoder.Type.kHallSensor, IntakeProfile.neoEncoderCountsPerRev);
+  private double wristEncoderCounts = wristEncoder.getPosition();
 
   private SparkPIDController wristController = m_wrist.getPIDController();
        
-  private TimeOfFlight s_DistanceSensor = new TimeOfFlight(0);
+  private TimeOfFlight distanceSensor = new TimeOfFlight(0);
+  private double safeZoneSensor = distanceSensor.getRange();
 
-  private boolean intkakeDeployed = false;
+  private boolean plusDeployed = false;
 
   /** Creates a new Intake. */
   public Intake() {
@@ -41,15 +43,15 @@ public class Intake extends SubsystemBase {
 
     m_wrist.clearFaults();
 
-    m_wrist.setInverted(false); //TODO: Ensure intake moves outward
-    m_outerRoller.setInverted(false); //TODO: Ensure roller spins inward
-    m_innerRoller.setInverted(false); //TODO: Ensure roller spins inward
+    m_wrist.setInverted(false);
+    m_outerRoller.setInverted(true);
+    m_innerRoller.setInverted(true);
 
     m_wrist.setSmartCurrentLimit(IntakeProfile.kWristCurrentLimit);
     m_outerRoller.configPeakCurrentLimit(IntakeProfile.kRollerCurrentLimit);
 
     m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_wrist.enableSoftLimit(SoftLimitDirection.kForward, false);
+    m_wrist.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_wrist.setSoftLimit(SoftLimitDirection.kReverse, (float)IntakeProfile.kInitialPos);
     m_wrist.setSoftLimit(SoftLimitDirection.kForward, (float)IntakeProfile.kDeployedPos);
 
@@ -64,66 +66,60 @@ public class Intake extends SubsystemBase {
     m_wrist.burnFlash();
   }
 
-  private void deployIntake(Arm s_Arm) {
-    double encoderCounts = wristEncoder.getCountsPerRevolution();
-    double deployedPos = 2000; //TODO: Needs to be configured
-    double lowerLimit = deployedPos + 10; //TODO: Needs to be configured
-    double safeZone = 1000; //TODO: Needs to be configured (In Milimeters)
-    double objectDistance = s_DistanceSensor.getRange();
-    if (encoderCounts >= lowerLimit) {
+  public void deployPlus() {
+    if (wristEncoderCounts >= IntakeProfile.kDeployedLowerLimitPos) {
       setWristOutput(0);
-      setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
-      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
-      s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
       m_wrist.setIdleMode(IdleMode.kCoast);
-      intkakeDeployed = true;
-    }
-    else if (objectDistance >= safeZone) {
-      IntakeButHoldThePlus(s_Arm);
+      plusDeployed = true;
     }
     else {
       m_wrist.set(0.2);
     }
   }
 
+  private void deployAndIntake(Arm s_Arm) {
+    deployPlus();
+    if (wristEncoderCounts >= IntakeProfile.kDeployedLowerLimitPos) {
+      setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
+      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
+      s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
+    }
+    // else if (safeZoneSensor <= IntakeProfile.kPlusSafeZone) {
+    //   IntakeButHoldThePlus(s_Arm);
+    // }
+  }
+
   private void IntakeButHoldThePlus(Arm s_Arm) {
-    double encoderCounts = wristEncoder.getCountsPerRevolution();
-    double initialPos = 0;
-    double upperLimit = initialPos + 10;
-    if (encoderCounts <= upperLimit) {
+    if (wristEncoderCounts <= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(0);
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
       s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
       m_wrist.setIdleMode(IdleMode.kBrake);
-      intkakeDeployed = false;
+      plusDeployed = false;
     }
-    else if (encoderCounts >= upperLimit) {
-      setWristOutput(-0.25);
+    else if (wristEncoderCounts >= IntakeProfile.kInitailUpperLimitPos) {
+      setWristOutput(-0.1);
     }
     else {
-      m_wrist.set(0.5);
+      m_wrist.set(-0.8);
       setOuterRollerOutput(0);
     }
   }
 
   public void resetIntake(Arm s_Arm) {
-    double encoderCounts = wristEncoder.getCountsPerRevolution();
-    double initialPos = 0;
-    double upperLimit = initialPos + 10;
-    if (encoderCounts <= upperLimit) {
+    setInnerRollerOutput(0);
+    setOuterRollerOutput(0);
+    s_Arm.setIndexorOuput(0);
+    if (wristEncoderCounts <= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(0);
-      setInnerRollerOutput(0);
-      setOuterRollerOutput(0);
-      s_Arm.setIndexorOuput(0);
       m_wrist.setIdleMode(IdleMode.kBrake);
-      intkakeDeployed = false;
+      plusDeployed = false;
     }
-    else if (encoderCounts >= upperLimit) {
-      setWristOutput(-0.25);
+    else if (wristEncoderCounts >= IntakeProfile.kInitailUpperLimitPos) {
+      setWristOutput(-0.1);
     }
     else {
-      m_wrist.set(0.5);
-      setOuterRollerOutput(0);
+      m_wrist.set(-0.8);
     }
   }
 
@@ -132,27 +128,12 @@ public class Intake extends SubsystemBase {
       resetIntake(s_Arm);
     }
     else {
-      deployIntake(s_Arm);
-      s_Arm.setShooterOutput(ArmProfile.kIndexorDefaultOutput);
-    }
-  }
-
-  public void explodeForShooter() {
-    double encoderCounts = wristEncoder.getCountsPerRevolution();
-    double deployedPos = 2000;
-    double lowerLimit = deployedPos + 10;
-    if (encoderCounts >= lowerLimit) {
-      setWristOutput(0);
-      m_wrist.setIdleMode(IdleMode.kCoast);
-      intkakeDeployed = true;
-    }
-    else {
-      m_wrist.set(0.3);
+      deployAndIntake(s_Arm);
     }
   }
 
   private boolean isIntakePlusEnabled() {
-    return intkakeDeployed;
+    return plusDeployed;
   }
 
   public void setInnerRollerOutput(double commandedOutputFraction) {
@@ -174,5 +155,6 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Outer Intkake Current Output (Amps)", m_outerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Wrist Current Output (Amps)", m_wrist.getOutputCurrent());
     SmartDashboard.putBoolean("Intake++ is Deployed", isIntakePlusEnabled());
+    SmartDashboard.putNumber("Wrist Encoder Counts", wristEncoderCounts);
   }
 }

@@ -29,12 +29,15 @@ public class Arm extends SubsystemBase {
 
   private RelativeEncoder pivotEncoderA = m_pivotA.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
   private RelativeEncoder pivotEncoderB = m_pivotB.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
+  private double pivotEncoderCounts = pivotEncoderA.getPosition();
+  private double currentPivotAngle = pivotEncoderCountsToDegrees(pivotEncoderCounts);
+  private boolean armIsReset = false;
 
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
   private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
-  private boolean noteDetected = !indexorSensor.get();
+  private boolean noteDetected = false;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -44,7 +47,7 @@ public class Arm extends SubsystemBase {
     m_shooterA.configFactoryDefault();
     m_shooterB.configFactoryDefault();
 
-    m_pivotA.setInverted(false);
+    m_pivotA.setInverted(false); //TODO: Ensure Arm Runs Up
     m_pivotB.setInverted(true);
     m_indexor.setInverted(false);//TODO: Ensure belts run up
     m_shooterA.setInverted(false);
@@ -59,7 +62,7 @@ public class Arm extends SubsystemBase {
     m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
     m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
-    m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd); //TODO: Ensure foward limit is at 90 degrees
+    m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
     m_pivotB.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);
 
     m_pivotA.setIdleMode(IdleMode.kBrake);
@@ -75,8 +78,6 @@ public class Arm extends SubsystemBase {
 
     m_pivotA.burnFlash();
     m_pivotB.burnFlash();
-
-    setArmPos(ArmProfile.pivotInitialPos);
   }
 
   public boolean isNoteDetected() {
@@ -89,47 +90,62 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmPos(double commandedOutputDegree) {
-    double lowerLimit = commandedOutputDegree - 0.1;
-    double upperLimit = commandedOutputDegree + 0.1;
-    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution());
+    double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
+    double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
+    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getPosition());
     if ((lowerLimit <= currentAngle) && (currentAngle <= upperLimit)) {
       setArmOutput(0);
     }
-    else if (currentAngle < lowerLimit) {
+    else if (currentAngle <= lowerLimit) {
       setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
-      setArmOutput(ArmProfile.kArmDefaultOutput * -0.5); // 40% negitive output
+      setArmOutput(ArmProfile.kArmDefaultOutput * -0.25); // 20% negitive output
     }
   }
 
+  public void prepareToShoot(Swerve s_Swerve, Vision s_Vision, Intake s_Intake) {
+    setShooterOutput(ArmProfile.kShooterDefaultOutput);
+    //if (s_Vision.LinedUpWithSpeaker()) {
+      s_Intake.deployPlus();
+    //}
+  }
+
   private double getPivotDegreeForDistance(double targetdistance){
-    // setPivotAngle(distance);
     double requiredDegree = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmDegreeArray, targetdistance);
     return requiredDegree;
   }
 
-  public void prepareToShoot(Swerve s_Swerve, Vision s_Vision, Intake s_Intake) {
-    setShooterOutput(1);
-    if (s_Vision.LinedUpWithSpeaker()) {
-      s_Intake.explodeForShooter();
-    }
-  }
-
   public void fireAtTarget(Vision s_Vision) {
-    double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
-    double lowerLimit = commandedOutputDegree - 0.1;
-    double upperLimit = commandedOutputDegree + 0.1;
-    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getCountsPerRevolution());
-    if ((lowerLimit <= currentAngle) && (currentAngle <= upperLimit)) {
+    //double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
+    double commandedOutputDegree = 5; //TODO: Must be configured for testing/showcasing
+    double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
+    double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
+    if ((lowerLimit <= currentPivotAngle) && (currentPivotAngle <= upperLimit)) {
       setArmOutput(0);
-      setIndexorOuput(1);
+      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
-    else if (currentAngle < lowerLimit) {
+    else if (currentPivotAngle <= lowerLimit) {
       setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
-      setArmOutput(ArmProfile.kArmDefaultOutput * -0.4); // 32% negitive output
+      setArmOutput(ArmProfile.kArmDefaultOutput * -0.25); // 20% negitive output
+    }
+  }
+
+  public void resetArm() {
+    setArmPos(ArmProfile.pivotInitialPos);
+    setIndexorOuput(0);
+    setShooterOutput(0);
+    armIsReset = true;
+  }
+
+  public boolean isArmReset() {
+    if (currentPivotAngle <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
