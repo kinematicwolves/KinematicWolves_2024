@@ -108,8 +108,8 @@ public final class Constants {
   }
 
   public static class ClimberProfile {
-    public static final int climberA_ID = 14; //TODO: Must configure CAN id's
-    public static final int climberB_ID = 15;
+    public static final int climberA_ID = 30; //TODO: Must configure CAN id's
+    public static final int climberB_ID = 31;
 
     public static final int climberCurrentLimit = 40;
   }

@@ -50,7 +50,7 @@ public final class CTREConfigs {
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentThreshold = SwerveProfile.driveCurrentThreshold;
         swerveDriveFXConfig.CurrentLimits.SupplyTimeThreshold = SwerveProfile.driveCurrentThresholdTime;
 
-        climberFXConfig.CurrentLimits.SupplyCurrentLimit = ClimberProfile.
+        climberFXConfig.CurrentLimits.SupplyCurrentLimit = ClimberProfile.climberCurrentLimit;
 
         /* PID Config */
         swerveDriveFXConfig.Slot0.kP = SwerveProfile.driveKP;

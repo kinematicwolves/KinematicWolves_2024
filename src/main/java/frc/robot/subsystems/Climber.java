@@ -11,8 +11,8 @@ import frc.robot.Constants.ClimberProfile;
 import frc.robot.Robot;
 
 public class Climber extends SubsystemBase {
-  private TalonFX m_climberA = new TalonFX(ClimberProfile.climberA_ID, "canivore1");
-  private TalonFX m_climberB = new TalonFX(ClimberProfile.climberB_ID, "canivore1");
+  private TalonFX m_climberA = new TalonFX(ClimberProfile.climberA_ID);
+  private TalonFX m_climberB = new TalonFX(ClimberProfile.climberB_ID);
 
   /** Creates a new Climber. */
   public Climber() {
@@ -20,9 +20,12 @@ public class Climber extends SubsystemBase {
     m_climberB.getConfigurator().apply(Robot.ctreConfigs.climberFXConfig);
 
     m_climberA.setInverted(false); //TODO: Ensure climber goes up
-    m_climberB.setInverted(false);
+    m_climberB.setInverted(true);
+  }
 
-    
+  public void setClimberOutput(double commandedOutputFraction) {
+    m_climberA.set(commandedOutputFraction);
+    m_climberB.set(commandedOutputFraction);
   }
 
   @Override

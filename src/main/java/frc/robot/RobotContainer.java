@@ -18,6 +18,7 @@ import frc.robot.commands.IntakeNote;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
@@ -49,6 +50,7 @@ public class RobotContainer {
     private final Arm s_Arm = new Arm();
     private final Intake s_Intake = new Intake();
     private final Vision s_Vision = new Vision();
+    private final Climber s_Climber = new Climber();
     //private final Lighting s_Lighting = new Lighting();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -108,6 +110,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterDefaultOutput)))
         .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)))
         .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
+        new JoystickButton(technition, XboxController.Button.kLeftStick.value)
+        .onTrue(new InstantCommand(() -> s_Climber.setClimberOutput(0.2)))
+        .onFalse(new InstantCommand(() -> s_Climber.setClimberOutput(0)));
     }
 
     /**
