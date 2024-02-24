@@ -19,7 +19,7 @@ public class Climber extends SubsystemBase {
     m_climberA.getConfigurator().apply(Robot.ctreConfigs.climberFXConfig);
     m_climberB.getConfigurator().apply(Robot.ctreConfigs.climberFXConfig);
 
-    m_climberA.setInverted(false); //TODO: Ensure climber goes up
+    m_climberA.setInverted(false); 
     m_climberB.setInverted(true);
   }
 
