@@ -29,7 +29,7 @@ public final class Constants {
   public static class ArmProfile {
     public static final int pivotMotorID_A = 15;
     public static final int pivotMotorID_B = 16;
-    public static final int indexorID = 17; 
+    public static final int indexorID = 17;
     public static final int shooterID_A = 18;
     public static final int shooterID_B = 19;
     public static final int noteDetectorChannel = 0; //TODO: This must be configured
@@ -37,7 +37,7 @@ public final class Constants {
     public static final int kPivotCurrentLimit = 40;
 
     public static final double kPivotSoftLimitRvs = 0.0;
-    public static final double kPivotSoftLiimitFwd = 5702398.18; //TODO: This must be configured
+    public static final double kPivotSoftLiimitFwd = 23830;
 
     public static final double pivotInitialPos = 0;
     public static final double kPivotDegreeThreshold = 0.1;
@@ -49,7 +49,7 @@ public final class Constants {
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
 
-    public static final double kArmDefaultOutput = 0.8;
+    public static final double kArmDefaultOutput = 0.5;
     public static final double kIndexorDefaultOutput = 1;
     public static final double kShooterDefaultOutput = 1;
 
@@ -73,8 +73,8 @@ public final class Constants {
     public static final int kRollerCurrentLimit = 40;
 
     public static final int kInitialPos = 0;
-    public static final double kDeployedPos = 1.4; //TODO: This must be configured
-    public static final double kWristThreshhold = 0.05; //TODO: This must be configured
+    public static final double kDeployedPos = 10053;
+    public static final double kWristThreshhold = 200; //TODO: This must be configured
     public static final double kDeployedLowerLimitPos = kDeployedPos - kWristCurrentLimit;
     public static final double kInitailUpperLimitPos = kInitialPos + kWristThreshhold;
     public static final double kPlusSafeZone = 1000; // Milimeters TODO: This must be configured

@@ -26,7 +26,6 @@ public class Intake extends SubsystemBase {
   private WPI_TalonSRX m_innerRoller = new WPI_TalonSRX(IntakeProfile.innerRoller);
 
   private RelativeEncoder wristEncoder = m_wrist.getEncoder(SparkRelativeEncoder.Type.kHallSensor, IntakeProfile.neoEncoderCountsPerRev);
-  private double wristEncoderCounts = wristEncoder.getPosition();
 
   private SparkPIDController wristController = m_wrist.getPIDController();
        
@@ -67,19 +66,19 @@ public class Intake extends SubsystemBase {
   }
 
   public void deployPlus() {
-    if (wristEncoderCounts >= IntakeProfile.kDeployedLowerLimitPos) {
+    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kCoast);
       plusDeployed = true;
     }
     else {
-      m_wrist.set(0.2);
+      m_wrist.set(0.1);
     }
   }
 
   private void deployAndIntake(Arm s_Arm) {
     deployPlus();
-    if (wristEncoderCounts >= IntakeProfile.kDeployedLowerLimitPos) {
+    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
       setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
       s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
@@ -90,14 +89,14 @@ public class Intake extends SubsystemBase {
   }
 
   private void IntakeButHoldThePlus(Arm s_Arm) {
-    if (wristEncoderCounts <= IntakeProfile.kInitailUpperLimitPos) {
+    if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(0);
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
       s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
       m_wrist.setIdleMode(IdleMode.kBrake);
       plusDeployed = false;
     }
-    else if (wristEncoderCounts >= IntakeProfile.kInitailUpperLimitPos) {
+    else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(-0.1);
     }
     else {
@@ -110,16 +109,16 @@ public class Intake extends SubsystemBase {
     setInnerRollerOutput(0);
     setOuterRollerOutput(0);
     s_Arm.setIndexorOuput(0);
-    if (wristEncoderCounts <= IntakeProfile.kInitailUpperLimitPos) {
+    if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kBrake);
       plusDeployed = false;
     }
-    else if (wristEncoderCounts >= IntakeProfile.kInitailUpperLimitPos) {
-      setWristOutput(-0.1);
-    }
+    // else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
+    //   setWristOutput(-0.1);
+    // }
     else {
-      m_wrist.set(-0.8);
+      m_wrist.set(-1);
     }
   }
 
@@ -155,6 +154,6 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Outer Intkake Current Output (Amps)", m_outerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Wrist Current Output (Amps)", m_wrist.getOutputCurrent());
     SmartDashboard.putBoolean("Intake++ is Deployed", isIntakePlusEnabled());
-    SmartDashboard.putNumber("Wrist Encoder Counts", wristEncoderCounts);
+    SmartDashboard.putNumber("Wrist Encoder Counts", wristEncoder.getPosition());
   }
 }

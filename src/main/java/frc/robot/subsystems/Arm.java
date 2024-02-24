@@ -29,8 +29,6 @@ public class Arm extends SubsystemBase {
 
   private RelativeEncoder pivotEncoderA = m_pivotA.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
   private RelativeEncoder pivotEncoderB = m_pivotB.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
-  private double pivotEncoderCounts = pivotEncoderA.getPosition();
-  private double currentPivotAngle = pivotEncoderCountsToDegrees(pivotEncoderCounts);
   private boolean armIsReset = false;
 
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
@@ -46,19 +44,19 @@ public class Arm extends SubsystemBase {
     m_indexor.configFactoryDefault();
     m_shooterA.configFactoryDefault();
     m_shooterB.configFactoryDefault();
-
-    m_pivotA.setInverted(false); //TODO: Ensure Arm Runs Up
-    m_pivotB.setInverted(true);
-    m_indexor.setInverted(false);//TODO: Ensure belts run up
+ 
+    m_pivotA.setInverted(true);
+    m_pivotB.setInverted(false);
+    m_indexor.setInverted(true);
     m_shooterA.setInverted(false);
-    m_shooterB.setInverted(true);//TODO: Ensure wheels spin outward
+    m_shooterB.setInverted(false);
 
     m_pivotA.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
     m_pivotB.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
 
     m_pivotA.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotB.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
     m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
@@ -121,11 +119,11 @@ public class Arm extends SubsystemBase {
     double commandedOutputDegree = 5; //TODO: Must be configured for testing/showcasing
     double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
     double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
-    if ((lowerLimit <= currentPivotAngle) && (currentPivotAngle <= upperLimit)) {
+    if ((lowerLimit <= pivotEncoderCountsToDegrees(pivotEncoderA.getPosition())) && (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= upperLimit)) {
       setArmOutput(0);
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
-    else if (currentPivotAngle <= lowerLimit) {
+    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= lowerLimit) {
       setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
@@ -141,7 +139,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmReset() {
-    if (currentPivotAngle <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
+    if (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
       return true;
     }
     else {
@@ -168,6 +166,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Collected", isNoteDetected());
     
+    SmartDashboard.putNumber("Arm Degree", pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()));
     SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
     SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
     SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());
