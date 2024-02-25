@@ -40,7 +40,7 @@ public final class Constants {
     public static final double kPivotSoftLiimitFwd = 23830;
 
     public static final double pivotInitialPos = 0;
-    public static final double kPivotDegreeThreshold = 0.1;
+    public static final double kPivotDegreeThreshold = 500;
 
     public static final double kArmGearRatio = ((3.0 * 4.0 * 5.0) * 3.0) / 1;
 
@@ -74,7 +74,7 @@ public final class Constants {
 
     public static final int kInitialPos = 0;
     public static final double kDeployedPos = 10053;
-    public static final double kWristThreshhold = 200; //TODO: This must be configured
+    public static final double kWristThreshhold = 250; //TODO: This must be configured
     public static final double kDeployedLowerLimitPos = kDeployedPos - kWristCurrentLimit;
     public static final double kInitailUpperLimitPos = kInitialPos + kWristThreshhold;
     public static final double kPlusSafeZone = 1000; // Milimeters TODO: This must be configured
@@ -88,7 +88,7 @@ public final class Constants {
     public static final PIDGains kWristPositionGains = new PIDGains(0.01, 0.0, 0.0); //TODO: This must be configured
 
     public static final double kOuterDefaultOutput = 1;
-    public static final double kInnerDefaultOutput = 1;
+    public static final double kInnerDefaultOutput = 0.8;
   }
 
   public static class LightingProfile {
@@ -177,21 +177,31 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4; // TODO: Must be configured. 4.99m/s before weight (Currently Theoretical)
+        public static final double maxSpeed = 2;//4; // TODO: Must be configured. 4.99m/s before weight (Currently Theoretical)
         /** Radians per Second */
-        public static final double maxAngularVelocity = 13; // TODO: Must be configured. 13.99r/s (Currently Theoretical)
+        public static final double maxAngularVelocity = 6; //13; // TODO: Must be configured. 13.99r/s (Currently Theoretical)
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Module Specific Constants */
+        /* Back Left Module - Module 0 */
+        public static final class Mod0 {
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
+            public static final int canCoderID = 9;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(135.1);
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
+
         /* Front Left Module - Module 1 */
         public static final class Mod1 {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(48.6);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(53.6);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -201,17 +211,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 6;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(24.3);
-            public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-        }
-        
-        /* Back Left Module - Module 0 */
-        public static final class Mod0 {
-            public static final int driveMotorID = 7;
-            public static final int angleMotorID = 8;
-            public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(136.4);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(16.5);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -221,7 +221,7 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-74.5);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-72.7);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

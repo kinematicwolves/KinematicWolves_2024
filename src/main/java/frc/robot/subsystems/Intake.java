@@ -72,7 +72,7 @@ public class Intake extends SubsystemBase {
       plusDeployed = true;
     }
     else {
-      m_wrist.set(0.1);
+      m_wrist.set(0.2);
     }
   }
 
@@ -118,7 +118,7 @@ public class Intake extends SubsystemBase {
     //   setWristOutput(-0.1);
     // }
     else {
-      m_wrist.set(-1);
+      m_wrist.set(-0.25);
     }
   }
 

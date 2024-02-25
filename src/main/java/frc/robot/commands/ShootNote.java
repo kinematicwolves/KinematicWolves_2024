@@ -44,7 +44,7 @@ public class ShootNote extends Command {
   public void execute() {
     timer += 20;
 
-    if (timer > 1000) {
+    if (timer > 2000) {
     s_Arm.fireAtTarget(s_Vision);
     }
   }
@@ -52,10 +52,10 @@ public class ShootNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.setArmPos(ArmProfile.pivotInitialPos);
-    if (s_Arm.isArmReset() == true) {
+    s_Arm.resetArm();
+    //if (s_Arm.isArmReset() == true) {
       s_Intake.resetIntake(s_Arm);
-    }
+    //}
   }
 
   // Returns true when the command should end.
