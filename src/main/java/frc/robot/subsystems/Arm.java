@@ -37,6 +37,8 @@ public class Arm extends SubsystemBase {
   private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
   private boolean noteDetected = false;
 
+  private boolean armIsClearForClimb = false;
+
   /** Creates a new Arm. */
   public Arm() {
     m_pivotA.restoreFactoryDefaults();
@@ -82,19 +84,14 @@ public class Arm extends SubsystemBase {
     return noteDetected;
   }
 
-  private double pivotEncoderCountsToDegrees(double encoderInput) {
-    double posIndegrees = (ArmProfile.kArmGearRatio * encoderInput) / 360;
-    return posIndegrees;
-  }
-
   public void setArmPos(double commandedOutputDegree) {
     double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
     double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
-    double currentAngle = pivotEncoderCountsToDegrees(pivotEncoderA.getPosition());
-    if ((lowerLimit <= currentAngle) && (currentAngle <= upperLimit)) {
+    double currentPos = pivotEncoderA.getPosition();
+    if ((lowerLimit <= currentPos) && (currentPos <= upperLimit)) {
       setArmOutput(0);
     }
-    else if (currentAngle <= lowerLimit) {
+    else if (currentPos <= lowerLimit) {
       setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
@@ -116,14 +113,14 @@ public class Arm extends SubsystemBase {
 
   public void fireAtTarget(Vision s_Vision) {
     //double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
-    double commandedOutputDegree = 4000; //TODO: Must be configured for testing/showcasing
-    double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
-    double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
-    if ((lowerLimit <= pivotEncoderCountsToDegrees(pivotEncoderA.getPosition())) && (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= upperLimit)) {
+    double commandedOutputPos = 4000; //TODO: Must be configured for testing/showcasing
+    double lowerLimit = commandedOutputPos - ArmProfile.kPivotDegreeThreshold;
+    double upperLimit = commandedOutputPos + ArmProfile.kPivotDegreeThreshold;
+    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
       setArmOutput(0);
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
-    else if (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= lowerLimit) {
+    else if (pivotEncoderA.getPosition() <= lowerLimit) {
       setArmOutput(ArmProfile.kArmDefaultOutput);
     }
     else {
@@ -139,12 +136,23 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmReset() {
-    if (pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()) <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
+    if (pivotEncoderA.getPosition() <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
       return true;
     }
     else {
       return false;
     }
+  }
+
+  public void setArmToClimbPos() {
+    setArmPos(ArmProfile.kPivotClimbPos);
+    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos) {
+      armIsClearForClimb = true;
+    }
+  }
+
+  public boolean isArmClearForClimb() {
+    return armIsClearForClimb;
   }
 
   public void setArmOutput(double commandedOutputFraction) {
@@ -166,7 +174,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Collected", isNoteDetected());
     
-    SmartDashboard.putNumber("Arm Degree", pivotEncoderCountsToDegrees(pivotEncoderA.getPosition()));
+    SmartDashboard.putNumber("Arm Degree", pivotEncoderA.getPosition());
     SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
     SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
     SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());

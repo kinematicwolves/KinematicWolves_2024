@@ -131,7 +131,7 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  private boolean isIntakePlusEnabled() {
+  public boolean isIntakePlusEnabled() {
     return plusDeployed;
   }
 

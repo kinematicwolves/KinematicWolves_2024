@@ -41,6 +41,7 @@ public final class Constants {
 
     public static final double pivotInitialPos = 0;
     public static final double kPivotDegreeThreshold = 500;
+    public static final double kPivotClimbPos = 20000 - kPivotDegreeThreshold; //TODO: This must be configured
 
     public static final double kArmGearRatio = ((3.0 * 4.0 * 5.0) * 3.0) / 1;
 
@@ -108,10 +109,44 @@ public final class Constants {
   }
 
   public static class ClimberProfile {
+    /* Motor Id's */
     public static final int climberA_ID = 30; //TODO: Must configure CAN id's
     public static final int climberB_ID = 31;
 
+    /* Motor Inverts */ //TODO: These must be configured
+    public static final InvertedValue climberAMotorInvert = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue climberBMotorInvert = InvertedValue.CounterClockwise_Positive;
+
+    /* Neutral Modes */ //TODO: These must be configured
+    public static final NeutralModeValue climberNeutralMode = NeutralModeValue.Brake;
+
+    /* Climber Current Limiting */
     public static final int climberCurrentLimit = 40;
+    public static final int climberCurrentThreshold = 40;
+    public static final double climberCurrentThresholdTime = 0.1;
+    public static final boolean climberEnableCurrentLimit = true;
+
+    /* Soft Limits */
+    public static final boolean climberEnableRVSSoftLimit = true;
+    public static final double climberRVSSoftLimitThreshold = 0;
+    public static final boolean climberEnableFWDSoftLimit = true;
+    public static final double climberFWDSoftLimitThreshold = 99999; //TODO: This must be configured
+   
+    /* Drive Motor PID Values */
+    public static final double climberKP = 0.0; //TODO: This must be configured
+    public static final double climberKI = 0.0;
+    public static final double climberKD = 0.0;
+    public static final double climberKF = 0.0;
+
+    /* Threshold and Set Positions */ //TODO: This must be configured
+    public static final double climberPosThreshold = 99;
+    public static final double climberMaxHeightPos = 9999;
+    public static final double climberTrueMaxPos = 9999 - climberPosThreshold;
+
+    /* Climber Set Outputs */
+    public static final double climberDefaultOutput = 0.3;
+    public static final double outputWithZeroLoad = 0.4;
+    public static final double outputWithRobotLoad = 0.8;
   }
 
   public static final class SwerveProfile {
