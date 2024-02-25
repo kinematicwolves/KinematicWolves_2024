@@ -77,15 +77,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    if (m_disabledCommandInitialization != null){
-      m_disabledCommandInitialization.cancel();
-      m_disabledCommandInitialization = null;
-    }
-
-    m_teleOpCommandInitialization = m_robotContainer.getTeleOpInitCommand();
-    if (m_teleOpCommandInitialization != null){
-      m_teleOpCommandInitialization.schedule();
-    }
   }
 
   /** This function is called periodically during autonomous. */
