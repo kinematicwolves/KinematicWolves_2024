@@ -29,13 +29,11 @@ public class Arm extends SubsystemBase {
 
   private RelativeEncoder pivotEncoderA = m_pivotA.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
   private RelativeEncoder pivotEncoderB = m_pivotB.getEncoder(SparkRelativeEncoder.Type.kHallSensor, ArmProfile.neoEncoderCountsPerRev);
-  private boolean armIsReset = false;
 
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
   private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
-  private boolean noteDetected = false;
 
   private boolean armIsClearForClimb = false;
 
@@ -80,10 +78,6 @@ public class Arm extends SubsystemBase {
     m_pivotB.burnFlash();
   }
 
-  public boolean isNoteDetected() {
-    return noteDetected;
-  }
-
   public void setArmPos(double commandedOutputDegree) {
     double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
     double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
@@ -113,9 +107,8 @@ public class Arm extends SubsystemBase {
 
   public void fireAtTarget(Vision s_Vision) {
     //double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
-    double commandedOutputPos = 4000; //TODO: Must be configured for testing/showcasing
-    double lowerLimit = commandedOutputPos - ArmProfile.kPivotDegreeThreshold;
-    double upperLimit = commandedOutputPos + ArmProfile.kPivotDegreeThreshold;
+    double lowerLimit = ArmProfile.kpivotSpeakerPos - ArmProfile.kPivotDegreeThreshold;
+    double upperLimit = ArmProfile.kpivotSpeakerPos + ArmProfile.kPivotDegreeThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
       setArmOutput(0);
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
@@ -132,7 +125,6 @@ public class Arm extends SubsystemBase {
     setArmPos(ArmProfile.pivotInitialPos);
     setIndexorOuput(0);
     setShooterOutput(0);
-    armIsReset = true;
   }
 
   public boolean isArmReset() {
@@ -146,13 +138,19 @@ public class Arm extends SubsystemBase {
 
   public void setArmToClimbPos() {
     setArmPos(ArmProfile.kPivotClimbPos);
-    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos) {
-      armIsClearForClimb = true;
-    }
   }
 
   public boolean isArmClearForClimb() {
-    return armIsClearForClimb;
+    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public boolean isNoteDetected() {
+    return indexorSensor.get();
   }
 
   public void setArmOutput(double commandedOutputFraction) {

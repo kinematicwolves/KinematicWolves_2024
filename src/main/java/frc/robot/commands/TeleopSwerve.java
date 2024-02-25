@@ -17,8 +17,9 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private BooleanSupplier slowModeSup;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier slowModeSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -26,6 +27,7 @@ public class TeleopSwerve extends Command {
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
+        this.slowModeSup = slowModeSup;
     }
 
     @Override
@@ -35,12 +37,23 @@ public class TeleopSwerve extends Command {
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), ControllerProfile.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(-rotationSup.getAsDouble(), ControllerProfile.stickDeadband);
 
-        /* Drive */
-        s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(SwerveProfile.maxSpeed), 
-            rotationVal * SwerveProfile.maxAngularVelocity, 
-            !robotCentricSup.getAsBoolean(), 
-            true
-        );
+        /* Slow Speed Drive */
+        if (slowModeSup.getAsBoolean() == true) {
+            s_Swerve.drive(
+                new Translation2d(translationVal * SwerveProfile.speedCap, strafeVal * SwerveProfile.speedCap).times(SwerveProfile.maxSpeed), 
+                (rotationVal * SwerveProfile.speedCap) * SwerveProfile.maxAngularVelocity,
+                !robotCentricSup.getAsBoolean(),
+                true
+            );
+        }
+        /* Normal Speed Drive */
+        else {
+            s_Swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(SwerveProfile.maxSpeed), 
+                rotationVal * SwerveProfile.maxAngularVelocity, 
+                !robotCentricSup.getAsBoolean(), 
+                true
+                );
+        }
     }
 }

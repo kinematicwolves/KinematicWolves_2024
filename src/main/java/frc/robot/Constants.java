@@ -41,6 +41,7 @@ public final class Constants {
 
     public static final double pivotInitialPos = 0;
     public static final double kPivotDegreeThreshold = 500;
+    public static final double kpivotSpeakerPos = 4000; //TODO: Must be configured for speaker
     public static final double kPivotClimbPos = 20000 - kPivotDegreeThreshold; //TODO: This must be configured
 
     public static final double kArmGearRatio = ((3.0 * 4.0 * 5.0) * 3.0) / 1;
@@ -191,7 +192,7 @@ public final class Constants {
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        public static final double openLoopRamp = 0.25;
+        public static final double openLoopRamp = 0.2;
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
@@ -212,9 +213,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 2;//4; // TODO: Must be configured. 4.99m/s before weight (Currently Theoretical)
+        public static final double maxSpeed = 4;//4; // TODO: Must be configured. 4.99m/s before weight (Currently Theoretical)
         /** Radians per Second */
-        public static final double maxAngularVelocity = 6; //13; // TODO: Must be configured. 13.99r/s (Currently Theoretical)
+        public static final double maxAngularVelocity = 8; //TODO: Must be configured. 13.99r/s before weight (Currently Theoretical)
+        /** Fractional Percentage **/
+        public static final double speedCap = 0.5;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

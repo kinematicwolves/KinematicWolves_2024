@@ -14,7 +14,9 @@ import frc.robot.Constants.ArmProfile;
 import frc.robot.Constants.ControllerProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.autos.Auto1;
+import frc.robot.commands.ClimbChain;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.RunClimbersToFirstState;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
@@ -41,9 +43,9 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -61,7 +63,8 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                () -> robotCentric.getAsBoolean(),
+                () -> slowMode.getAsBoolean()
             )
         );
         //Configure the button bindings
@@ -81,8 +84,12 @@ public class RobotContainer {
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm));
-        new JoystickButton(munipulator, XboxController.Axis.kRightTrigger.value) // RT = Shoot
+        new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot
         .whileTrue(new ShootNote(s_Swerve, s_Vision, s_Intake, s_Arm));
+        new JoystickButton(munipulator, XboxController.Button.kBack.value)
+        .whileTrue(new RunClimbersToFirstState(s_Intake, s_Arm, s_Climber));
+        new JoystickButton(munipulator, XboxController.Button.kStart.value)
+        .whileTrue(new ClimbChain(s_Climber));
 
         /* Technition Buttons */
         new JoystickButton(technition, XboxController.Button.kA.value) // X = Inner Roller

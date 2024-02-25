@@ -114,21 +114,21 @@ public class Intake extends SubsystemBase {
       m_wrist.setIdleMode(IdleMode.kBrake);
       plusDeployed = false;
     }
-    // else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
-    //   setWristOutput(-0.1);
-    // }
+    else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
+      setWristOutput(-0.1);
+    }
     else {
       m_wrist.set(-0.25);
     }
   }
 
   public void enableIntake(Arm s_Arm) {
-    if (s_Arm.isNoteDetected() == true) {
-      resetIntake(s_Arm);
-    }
-    else {
+    // if (s_Arm.isNoteDetected() == true) {
+    //   resetIntake(s_Arm);
+    // }
+    //else {
       deployAndIntake(s_Arm);
-    }
+    //}
   }
 
   public boolean isIntakePlusEnabled() {

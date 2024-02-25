@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ArmProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
@@ -17,8 +16,6 @@ public class ShootNote extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
 
-  private int timer;
-
   /** Creates a new ShootNote. */
   public ShootNote(Swerve swerve, Vision vision, Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,15 +23,11 @@ public class ShootNote extends Command {
     s_Vision = vision;
     s_Intake = intake;
     s_Arm = arm;
-
-    timer = 0;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = 0;
-
     //s_Swerve.rotateDrivetrainToTarget(s_Vision);
     s_Arm.prepareToShoot(s_Swerve, s_Vision, s_Intake);
   }
@@ -42,9 +35,7 @@ public class ShootNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    timer += 20;
-
-    if (timer > 2000) {
+    if (s_Intake.isIntakePlusEnabled() == true) {
     s_Arm.fireAtTarget(s_Vision);
     }
   }
@@ -53,9 +44,9 @@ public class ShootNote extends Command {
   @Override
   public void end(boolean interrupted) {
     s_Arm.resetArm();
-    //if (s_Arm.isArmReset() == true) {
+    if (s_Arm.isArmReset() == true) {
       s_Intake.resetIntake(s_Arm);
-    //}
+    }
   }
 
   // Returns true when the command should end.
