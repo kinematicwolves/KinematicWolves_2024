@@ -35,8 +35,6 @@ public class Arm extends SubsystemBase {
 
   private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
 
-  private boolean armIsClearForClimb = false;
-
   /** Creates a new Arm. */
   public Arm() {
     m_pivotA.restoreFactoryDefaults();
@@ -78,9 +76,9 @@ public class Arm extends SubsystemBase {
     m_pivotB.burnFlash();
   }
 
-  public void setArmPos(double commandedOutputDegree) {
-    double lowerLimit = commandedOutputDegree - ArmProfile.kPivotDegreeThreshold;
-    double upperLimit = commandedOutputDegree + ArmProfile.kPivotDegreeThreshold;
+  private void setArmPos(double commandedOutputPos) {
+    double lowerLimit = commandedOutputPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = commandedOutputPos + ArmProfile.kPivotPosThreshold;
     double currentPos = pivotEncoderA.getPosition();
     if ((lowerLimit <= currentPos) && (currentPos <= upperLimit)) {
       setArmOutput(0);
@@ -100,15 +98,15 @@ public class Arm extends SubsystemBase {
     //}
   }
 
-  private double getPivotDegreeForDistance(double targetdistance){
-    double requiredDegree = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmDegreeArray, targetdistance);
-    return requiredDegree;
+  private double getPivotPosForDistance(double targetdistance){
+    double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
+    return requiredPos;
   }
 
-  public void fireAtTarget(Vision s_Vision) {
-    //double commandedOutputDegree = getPivotDegreeForDistance(s_Vision.getFilteredDistance());
-    double lowerLimit = ArmProfile.kpivotSpeakerPos - ArmProfile.kPivotDegreeThreshold;
-    double upperLimit = ArmProfile.kpivotSpeakerPos + ArmProfile.kPivotDegreeThreshold;
+  public void fireAtSpeaker(Vision s_Vision) {
+    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
+    double lowerLimit = ArmProfile.kpivotSpeakerPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = ArmProfile.kpivotSpeakerPos + ArmProfile.kPivotPosThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
       setArmOutput(0);
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
@@ -128,7 +126,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmReset() {
-    if (pivotEncoderA.getPosition() <= ArmProfile.pivotInitialPos + ArmProfile.kPivotDegreeThreshold) {
+    if (pivotEncoderA.getPosition() <= ArmProfile.pivotInitialPos + ArmProfile.kPivotPosThreshold) {
       return true;
     }
     else {
@@ -141,13 +139,34 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmClearForClimb() {
-    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos) {
+    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos - ArmProfile.kPivotPosThreshold) {
       return true;
     }
     else {
       return false;
     }
   }
+
+  public void dropNoteInAmp() {
+    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
+    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
+      setArmOutput(0);
+      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
+    }
+    else if (pivotEncoderA.getPosition() <= lowerLimit) {
+      setArmOutput(ArmProfile.kArmDefaultOutput);
+    }
+    else {
+      setArmOutput(ArmProfile.kArmDefaultOutput * -0.25); // 20% negitive output
+    }
+  }
+
+  // private void setArmFWDSoftLimit() {
+  //   if (pivotEncoderA.getPosition() >= ArmProfile.kPivotSoftLiimitFwd) {
+  //     setArmPos(ArmProfile.kPivotSoftLiimitFwd - ArmProfile.kPivotPosThreshold);
+  //   }
+  // }
 
   public boolean isNoteDetected() {
     return indexorSensor.get();
@@ -170,9 +189,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //setArmFWDSoftLimit();
+
     SmartDashboard.putBoolean("Note Collected", isNoteDetected());
+    SmartDashboard.putBoolean("Arm is Reset", isArmReset());
     
-    SmartDashboard.putNumber("Arm Degree", pivotEncoderA.getPosition());
+    SmartDashboard.putNumber("Arm Position", pivotEncoderA.getPosition());
     SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
     SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
     SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());

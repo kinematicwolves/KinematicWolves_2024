@@ -5,22 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
-public class ShootNote extends Command {
-  private Swerve s_Swerve;
-  private Vision s_Vision;
+public class DropAmpNote extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
 
-  /** Creates a new ShootNote. */
-  public ShootNote(Swerve swerve, Vision vision, Intake intake, Arm arm) {
+  /** Creates a new DropAmpNote. */
+  public DropAmpNote(Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    s_Swerve = swerve;
-    s_Vision = vision;
     s_Intake = intake;
     s_Arm = arm;
   }
@@ -28,15 +23,15 @@ public class ShootNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //s_Swerve.rotateDrivetrainToTarget(s_Vision);
-    s_Arm.prepareToShoot(s_Swerve, s_Vision, s_Intake);
+    s_Intake.deployPlus();
+    s_Arm.setArmOutput(ArmProfile.kShooterAmpOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (s_Intake.isIntakePlusEnabled() == true) {
-    s_Arm.fireAtSpeaker(s_Vision);
+      s_Arm.dropNoteInAmp();
     }
   }
 

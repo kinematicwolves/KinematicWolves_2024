@@ -32,8 +32,6 @@ public class Intake extends SubsystemBase {
   private TimeOfFlight distanceSensor = new TimeOfFlight(0);
   private double safeZoneSensor = distanceSensor.getRange();
 
-  private boolean plusDeployed = false;
-
   /** Creates a new Intake. */
   public Intake() {
     m_wrist.restoreFactoryDefaults();
@@ -69,7 +67,6 @@ public class Intake extends SubsystemBase {
     if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kCoast);
-      plusDeployed = true;
     }
     else {
       m_wrist.set(0.2);
@@ -94,7 +91,6 @@ public class Intake extends SubsystemBase {
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
       s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
       m_wrist.setIdleMode(IdleMode.kBrake);
-      plusDeployed = false;
     }
     else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(-0.1);
@@ -112,13 +108,14 @@ public class Intake extends SubsystemBase {
     if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kBrake);
-      plusDeployed = false;
     }
     else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
       setWristOutput(-0.1);
+      m_wrist.setIdleMode(IdleMode.kBrake);
     }
     else {
       m_wrist.set(-0.25);
+      m_wrist.setIdleMode(IdleMode.kBrake);
     }
   }
 
@@ -132,7 +129,12 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isIntakePlusEnabled() {
-    return plusDeployed;
+    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
+    return true;
+    }
+    else {
+      return false;
+    }
   }
 
   public void setInnerRollerOutput(double commandedOutputFraction) {

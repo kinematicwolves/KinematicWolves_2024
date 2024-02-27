@@ -18,8 +18,8 @@ public class Robot extends TimedRobot {
   public static FXConfigs fxConfigs = new FXConfigs();
 
   private Command m_autonomousCommand;
-  private Command m_teleOpCommandInitialization;
   private Command m_disabledCommandInitialization;
+  private Command m_teleOpCommandInitialization;
 
   private RobotContainer m_robotContainer;
 
@@ -92,6 +92,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
     if (m_disabledCommandInitialization != null){
       m_disabledCommandInitialization.cancel();
       m_disabledCommandInitialization = null;
