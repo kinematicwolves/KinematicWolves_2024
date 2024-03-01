@@ -179,7 +179,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isArmClearForClimb() {
-    if (pivotEncoderA.getPosition() >= ArmProfile.kPivotClimbPos - ArmProfile.kPivotPosThreshold) {
+    if (pivotEncoderA.getPosition() >= ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold) {
       return true;
     }
     else {
@@ -195,7 +195,7 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.39);
+      setArmOutput(0.38);
     }
     else {
       setArmOutput(-0.15);
@@ -203,13 +203,13 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmToClimbPos() {
-    double lowerLimit = ArmProfile.kpivotAmpPos - 800;
-    double upperLimit = ArmProfile.kpivotAmpPos + 600;
+    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
       setArmOutput(0);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.36);
+      setArmOutput(0.35);
     }
     else {
       setArmOutput(-0.15);

@@ -9,13 +9,13 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 
-public class RunClimbersToFirstState extends Command {
+public class PreClimbState extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
   private Climber s_Climber;
 
   /** Creates a new RunClimbersToFirstState. */
-  public RunClimbersToFirstState(Intake intake, Arm arm, Climber climber) {
+  public PreClimbState(Intake intake, Arm arm, Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;

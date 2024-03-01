@@ -28,7 +28,7 @@ import frc.robot.autos.TimedIntakeNote;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
 import frc.robot.commands.IntakeNote;
-import frc.robot.commands.RunClimbersToFirstState;
+import frc.robot.commands.PreClimbState;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
@@ -137,7 +137,7 @@ public class RobotContainer {
         new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Shoot In Amp
         .whileTrue(new DumpNote(s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kBack.value) // Back = Climbers to First State
-        .whileTrue(new RunClimbersToFirstState(s_Intake, s_Arm, s_Climber)); 
+        .whileTrue(new PreClimbState(s_Intake, s_Arm, s_Climber)); 
         new JoystickButton(munipulator, XboxController.Button.kStart.value) // Start = Climb Chain
         .whileTrue(new ClimbChain(s_Climber, s_Arm));
         new JoystickButton(munipulator, XboxController.Button.kLeftStick.value) // Down Left Stick = Climber A

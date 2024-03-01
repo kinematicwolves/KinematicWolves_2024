@@ -49,8 +49,7 @@ public final class Constants {
     public static final double kPivotPosThreshold = 550;
     public static final double pivotInitialPos = 0;
     public static final double kpivotSpeakerPos = 13000;
-    public static final double kpivotAmpPos = 53000; //54700;
-    public static final double kPivotClimbPos = 53000;
+    public static final double kpivotAmpPos = 53500; //54700;
 
     /* Conversion Factors */
     public static final int neoEncoderCountsPerRev = 42;
