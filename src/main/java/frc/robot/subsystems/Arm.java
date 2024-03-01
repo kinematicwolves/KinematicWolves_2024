@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -119,10 +118,10 @@ public class Arm extends SubsystemBase {
     //}
   }
 
-  private double getPivotPosForDistance(double targetdistance){
-    double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
-    return requiredPos;
-  }
+  // private double getPivotPosForDistance(double targetdistance){
+  //   double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
+  //   return requiredPos;
+  // }
 
   public void fireAtSpeaker() {
     //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
@@ -156,6 +155,7 @@ public class Arm extends SubsystemBase {
     }
   }
 
+
   public void resetArm() {
     setIndexorOuput(0);
     setShooterOutput(0);
@@ -165,7 +165,7 @@ public class Arm extends SubsystemBase {
       setArmOutput(0);
     }
     else {
-      setArmOutput(-0.3);
+      setArmOutput(-0.35);
     }
   }
 
@@ -227,7 +227,7 @@ public class Arm extends SubsystemBase {
 
   public void setArmOutput(double commandedOutputFraction) {
     m_pivotA.set(commandedOutputFraction);
-    m_pivotB.set(commandedOutputFraction * 2);
+    m_pivotB.set(commandedOutputFraction);
   }
 
   public void setIndexorOuput(double commandedOutputFraction) {

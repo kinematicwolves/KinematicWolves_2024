@@ -28,7 +28,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.enableIntake(s_Arm, s_Lighting);
+    s_Intake.deployAndIntake(s_Arm);
   }
 
   // Called once the command ends or is interrupted.

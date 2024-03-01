@@ -19,9 +19,12 @@ import frc.robot.Constants.IntakeProfile;
 import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
 import frc.robot.RobotStates.SetTestState;
-import frc.robot.TechnitionCommands.ArmControl;
-import frc.robot.TechnitionCommands.WristControl;
+import frc.robot.autos.BackUp;
+// import frc.robot.TechnitionCommands.ArmControl;
+// import frc.robot.TechnitionCommands.WristControl;
 import frc.robot.autos.DefaultAuto;
+import frc.robot.autos.RDefault;
+import frc.robot.autos.TimedIntakeNote;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
 import frc.robot.commands.IntakeNote;
@@ -58,8 +61,8 @@ public class RobotContainer {
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
     /* Technition Controls */
-    private final int wristAxis = XboxController.Axis.kRightY.value;
-    private final int armAxis = XboxController.Axis.kLeftY.value;
+    // private final int wristAxis = XboxController.Axis.kRightY.value;
+    // private final int armAxis = XboxController.Axis.kLeftY.value;
 
     /* Sendable Choosers */
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
@@ -100,7 +103,9 @@ public class RobotContainer {
         //     () -> -technition.getRawAxis(armAxis)));
 
         /* Chooser for Auton Commands */
-        m_AutoChooser.setDefaultOption("Test Auto", new DefaultAuto(s_Swerve));
+        m_AutoChooser.setDefaultOption("Default Auto", new DefaultAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Right Default", new RDefault(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
 
         // A chooser for TeleOp Initialization Commands
@@ -118,10 +123,15 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
+        new JoystickButton(driver, XboxController.Button.kB.value)
+        .onTrue(new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3));
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm));
+        new JoystickButton(munipulator, XboxController.Button.kB.value)
+        .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(-0.4)))
+        .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker
         .whileTrue(new ShootNote(s_Swerve, s_Vision, s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Shoot In Amp

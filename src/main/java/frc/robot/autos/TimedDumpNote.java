@@ -16,10 +16,10 @@ public class TimedDumpNote extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
   private Lighting s_Lighting;
-  private int seconds;
+  private double seconds;
   private int timer;
 
-  public TimedDumpNote(Intake intake, Arm arm, Lighting lighting, int seconds) {
+  public TimedDumpNote(Intake intake, Arm arm, Lighting lighting, double seconds) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
@@ -48,15 +48,13 @@ public class TimedDumpNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (timer >= Units.secondsToMilliseconds(seconds)) {
       s_Arm.resetArm();
       s_Intake.resetIntakeForAmp(s_Arm, s_Lighting);
-    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return timer >= Units.secondsToMilliseconds(seconds);
   }
 }

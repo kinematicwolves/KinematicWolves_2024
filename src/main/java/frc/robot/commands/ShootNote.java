@@ -12,8 +12,6 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
 public class ShootNote extends Command {
-  private Swerve s_Swerve;
-  private Vision s_Vision;
   private Intake s_Intake;
   private Arm s_Arm;
   private Lighting s_Lighting;
@@ -21,8 +19,6 @@ public class ShootNote extends Command {
   /** Creates a new ShootNote. */
   public ShootNote(Swerve swerve, Vision vision, Intake intake, Arm arm, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
-    s_Swerve = swerve;
-    s_Vision = vision;
     s_Intake = intake;
     s_Arm = arm;
     s_Lighting = lighting;

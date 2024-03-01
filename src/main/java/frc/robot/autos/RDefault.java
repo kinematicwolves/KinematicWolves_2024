@@ -21,8 +21,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class DefaultAuto extends SequentialCommandGroup {
-    public DefaultAuto(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class RDefault extends SequentialCommandGroup {
+    public RDefault(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -30,20 +30,20 @@ public class DefaultAuto extends SequentialCommandGroup {
                 .setKinematics(SwerveProfile.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-        Trajectory backupTrajectory =
+        Trajectory rotate =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, 0)),
-              new Pose2d(1.15, 0, new Rotation2d(0.029)),
+              List.of(new Translation2d(0.5, 0.4)),
+              new Pose2d(1.19, 0.26, new Rotation2d(0.24)),
                 config);
 
-        Trajectory backup2Trajectory =
+        Trajectory backup =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, 0)),
-              new Pose2d(0.5, 0, new Rotation2d(0.01)),
+               List.of(new Translation2d(0.25, 0.2)),
+               new Pose2d(0.5, 0.4, new Rotation2d(0.24)),
                 config);
 
         var thetaController =
@@ -53,7 +53,7 @@ public class DefaultAuto extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                backupTrajectory,
+                rotate,
                 s_Swerve::getPose,
                 SwerveProfile.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -64,7 +64,7 @@ public class DefaultAuto extends SequentialCommandGroup {
 
                 SwerveControllerCommand swerveControllerCommand2 =
                 new SwerveControllerCommand(
-                    backup2Trajectory,
+                    backup,
                     s_Swerve::getPose,
                     SwerveProfile.swerveKinematics,
                     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -72,18 +72,18 @@ public class DefaultAuto extends SequentialCommandGroup {
                     thetaController,
                     s_Swerve::setModuleStates,
                     s_Swerve);
-
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 2.5),
-            new InstantCommand(() -> s_Swerve.setPose(backupTrajectory.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.setPose(rotate.getInitialPose())),
             swerveControllerCommand,
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
-            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3.4),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 22000, 3),
-            new InstantCommand(() -> s_Swerve.setPose(backup2Trajectory.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24000, 2.6),
+            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3.1),
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2.6),
+            new InstantCommand(() -> s_Swerve.setPose(backup.getInitialPose())),
             swerveControllerCommand2,
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
             new InstantCommand(() -> s_Lighting.setDisabledLightShow())
         );
     }
