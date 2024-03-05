@@ -35,7 +35,7 @@ public class DefaultAuto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
               List.of(new Translation2d(0.5, 0)),
-              new Pose2d(1.15, 0, new Rotation2d(0.029)),
+              new Pose2d(1.48, 0, new Rotation2d(0.053)),
                 config);
 
         Trajectory backup2Trajectory =
@@ -43,7 +43,7 @@ public class DefaultAuto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
               List.of(new Translation2d(0.5, 0)),
-              new Pose2d(0.5, 0, new Rotation2d(0.01)),
+              new Pose2d(0.6, 0, new Rotation2d(-0.04)),
                 config);
 
         var thetaController =
@@ -79,8 +79,8 @@ public class DefaultAuto extends SequentialCommandGroup {
             new InstantCommand(() -> s_Swerve.setPose(backupTrajectory.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
-            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3.4),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 22000, 3),
+            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 19900, 3),
             new InstantCommand(() -> s_Swerve.setPose(backup2Trajectory.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),

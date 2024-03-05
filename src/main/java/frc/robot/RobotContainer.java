@@ -123,8 +123,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
-        new JoystickButton(driver, XboxController.Button.kB.value)
-        .onTrue(new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3));
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 

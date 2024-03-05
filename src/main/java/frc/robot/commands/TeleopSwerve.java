@@ -17,9 +17,9 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
-    private BooleanSupplier slowModeSup;
+    private BooleanSupplier turboModeSup;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier slowModeSup) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier turboModeSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -27,7 +27,7 @@ public class TeleopSwerve extends Command {
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
-        this.slowModeSup = slowModeSup;
+        this.turboModeSup = turboModeSup;
     }
 
     @Override
@@ -38,10 +38,10 @@ public class TeleopSwerve extends Command {
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), ControllerProfile.stickDeadband);
 
         /* Slow Speed Drive */
-        if (slowModeSup.getAsBoolean() == true) {
+        if (turboModeSup.getAsBoolean() == true) {
             s_Swerve.drive(
-                new Translation2d(translationVal * SwerveProfile.speedCap, strafeVal * SwerveProfile.speedCap).times(SwerveProfile.maxSpeed), 
-                (rotationVal * SwerveProfile.speedCap) * SwerveProfile.maxAngularVelocity,
+                new Translation2d(translationVal, strafeVal).times(SwerveProfile.maxSpeed), 
+                (rotationVal) * SwerveProfile.maxAngularVelocity,
                 !robotCentricSup.getAsBoolean(),
                 true
             );
@@ -49,8 +49,8 @@ public class TeleopSwerve extends Command {
         /* Normal Speed Drive */
         else {
             s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveProfile.maxSpeed), 
-                rotationVal * SwerveProfile.maxAngularVelocity, 
+                new Translation2d(translationVal * SwerveProfile.speedCap, strafeVal * SwerveProfile.speedCap).times(SwerveProfile.maxSpeed), 
+                (rotationVal * SwerveProfile.speedCap) * SwerveProfile.maxAngularVelocity, 
                 !robotCentricSup.getAsBoolean(), 
                 true
                 );

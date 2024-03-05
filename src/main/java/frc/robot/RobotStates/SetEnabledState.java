@@ -9,16 +9,25 @@ import frc.robot.subsystems.Lighting;
 
 public class SetEnabledState extends Command {
   private Lighting s_Lighting;
+  private int matchTimer;
 
   /** Creates a new TeleOpLightShow. */
   public SetEnabledState(Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Lighting = lighting;
+    matchTimer = 0;
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    matchTimer = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    matchTimer += 20;
     s_Lighting.setTeleOpLightShow();
   }
 
