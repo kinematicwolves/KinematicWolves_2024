@@ -14,11 +14,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmProfile;
 import frc.robot.Constants.SwerveProfile;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
-
-public class AutoTest extends SequentialCommandGroup {
-    public AutoTest(Swerve s_Swerve){
+ 
+public class BackUp extends SequentialCommandGroup {
+    public BackUp(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -26,14 +30,12 @@ public class AutoTest extends SequentialCommandGroup {
                 .setKinematics(SwerveProfile.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-        Trajectory exampleTrajectory =
+        Trajectory backupTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              // Pass through these two interior waypoints, making an 's' curve path
-              List.of(new Translation2d(0, 2), new Translation2d(3, 2.5)),
-              // End 3 meters straight ahead of where we started, facing forward
-              new Pose2d(4.5, 2.5, new Rotation2d(0)),
+              List.of(new Translation2d(1, 0)),
+              new Pose2d(1.5, 0, new Rotation2d(0.029)),
                 config);
 
         var thetaController =
@@ -43,7 +45,7 @@ public class AutoTest extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                exampleTrajectory,
+                backupTrajectory,
                 s_Swerve::getPose,
                 SwerveProfile.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -52,10 +54,12 @@ public class AutoTest extends SequentialCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-
         addCommands(
-            new InstantCommand(() -> s_Swerve.setPose(exampleTrajectory.getInitialPose())),
-            swerveControllerCommand
+            new InstantCommand(() -> s_Lighting.setRedLightShow()),
+            new InstantCommand(() -> s_Swerve.setPose(backupTrajectory.getInitialPose())),
+            swerveControllerCommand,
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
+            new InstantCommand(() -> s_Lighting.setDisabledLightShow())
         );
     }
 }

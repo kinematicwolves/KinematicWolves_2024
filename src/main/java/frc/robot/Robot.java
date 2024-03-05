@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static CTREConfigs ctreConfigs = new CTREConfigs();
+  public static FXConfigs fxConfigs = new FXConfigs();
 
   private Command m_autonomousCommand;
-  private Command m_telopLightingCommand;
-  private Command m_disabledCommand;
+  private Command m_disabledCommandInitialization;
+  private Command m_teleOpCommandInitialization;
 
   private RobotContainer m_robotContainer;
 
@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    ctreConfigs = new CTREConfigs();
+    fxConfigs = new FXConfigs();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -54,14 +54,14 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    if (m_telopLightingCommand != null){
-      m_telopLightingCommand.cancel();
-      m_telopLightingCommand = null;
+    if (m_teleOpCommandInitialization != null){
+      m_teleOpCommandInitialization.cancel();
+      m_teleOpCommandInitialization = null;
     }
     
-    m_disabledCommand = m_robotContainer.getDisabledCommand();
-    if (m_disabledCommand != null){
-      m_disabledCommand.schedule();
+    m_disabledCommandInitialization = m_robotContainer.getDisabledCommandInitCommand();
+    if (m_disabledCommandInitialization != null){
+      m_disabledCommandInitialization.schedule();
     }
   }
 
@@ -76,15 +76,6 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    }
-    if (m_disabledCommand != null){
-      m_disabledCommand.cancel();
-      m_disabledCommand = null;
-    }
-
-    m_telopLightingCommand = m_robotContainer.getTeleopLightingCommand();
-    if (m_telopLightingCommand != null){
-      m_telopLightingCommand.schedule();
     }
   }
 
@@ -101,14 +92,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    if (m_disabledCommand != null){
-      m_disabledCommand.cancel();
-      m_disabledCommand = null;
+    
+    if (m_disabledCommandInitialization != null){
+      m_disabledCommandInitialization.cancel();
+      m_disabledCommandInitialization = null;
     }
 
-    m_telopLightingCommand = m_robotContainer.getTeleopLightingCommand();
-    if (m_telopLightingCommand != null){
-      m_telopLightingCommand.schedule();
+    m_teleOpCommandInitialization = m_robotContainer.getTeleOpInitCommand();
+    if (m_teleOpCommandInitialization != null){
+      m_teleOpCommandInitialization.schedule();
     }
   }
 
