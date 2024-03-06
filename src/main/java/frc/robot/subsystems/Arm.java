@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -32,6 +33,8 @@ public class Arm extends SubsystemBase {
 
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
+  
+  private double setpoint = 0;
 
   //private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
 
@@ -91,92 +94,27 @@ public class Arm extends SubsystemBase {
     m_pivotB.burnFlash();
   }
 
-  /* Set Arm To Position Logic:
-   * When arm is at commanded position:
-   *    -Set arm to 0 (brake mode will hold it in place)
-   * When arm is higher then commanded position:
-   *    -Set arm output to -12%
-   * When are is lower then commanded position:
-   *    -Set arm output to 50%
+  /* Basic pivot functions */
+  /** 
+   * Sets the arm PID controller setpoint and moves the arm to that setpoint
+   * 
+   * @param armSetpoint the setpoint for the arm
    */
-  public void setArmPos() {
-    double lowerLimit = 50000 - 800;
-    double upperLimit = 50000 + 600;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.38);
-    }
-    else {
-      setArmOutput(-0.15);
-    }
+  public void setArmPos(double armSetpoint) {
+    setpoint = armSetpoint;
+    pivotControllerA.setReference(setpoint, ControlType.kPosition);
+    m_pivotB.follow(m_pivotA);
   }
 
-  /* Prepare Robot to Shoot Function Logic:
-   * -Set shooter motors to 100%
-   * -Deploy Intake Plus Plus
+  /**
+   *  Checks if the arm is near the setpoint
+   * 
+   * @return true if the arm is at the set point, otherwise false
    */
-  public void prepareToShoot(Intake s_Intake) {
-    setShooterOutput(ArmProfile.kShooterDefaultOutput);
-    //if (s_Vision.LinedUpWithSpeaker()) {
-      s_Intake.deployPlus();
-    //}
-  }
-
-  // private double getPivotPosForDistance(double targetdistance){
-  //   double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
-  //   return requiredPos;
-  // }
-
-  public void fireAtSpeaker() {
-    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
-    double lowerLimit = ArmProfile.kpivotSpeakerPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotSpeakerPos + ArmProfile.kPivotPosThreshold;
+  public boolean isAtSetpoint() {
+    double lowerLimit = setpoint - ArmProfile.kPivotPosThreshold;
+    double upperLimit = setpoint + ArmProfile.kPivotPosThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(ArmProfile.kArmDefaultOutput);
-    }
-    else {
-      setArmOutput(ArmProfile.kArmDefaultOutput * -0.25); // 20% negitive output
-    }
-  }
-
-  public void fireAtSetPos(double commandedPos) {
-    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
-    double lowerLimit = commandedPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = commandedPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(ArmProfile.kArmDefaultOutput);
-    }
-    else {
-      setArmOutput(-0.15);
-    }
-  }
-
-
-  public void resetArm() {
-    setIndexorOuput(0);
-    setShooterOutput(0);
-    double upperLimit = ArmProfile.pivotInitialPos + ArmProfile.kPivotPosThreshold;
-    double currentPos = pivotEncoderA.getPosition();
-    if (currentPos <= upperLimit) {
-      setArmOutput(0);
-    }
-    else {
-      setArmOutput(-0.4);
-    }
-  }
-
-  public boolean isArmReset() {
-    if (pivotEncoderA.getPosition() <= ArmProfile.pivotInitialPos + ArmProfile.kPivotPosThreshold) {
       return true;
     }
     else {
@@ -184,8 +122,13 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public boolean isArmClearForClimb() {
-    if (pivotEncoderA.getPosition() >= ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold) {
+  /**
+   *  Checks if the arm is below the setpoint
+   * 
+   * @return true if the arm is below the set point, otherwise false
+   */
+  public boolean isBelowSetpoint() {
+    if (pivotEncoderA.getPosition() <= setpoint) {
       return true;
     }
     else {
@@ -193,37 +136,13 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void dropNoteInAmp() {
-    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.45);
-    }
-    else {
-      setArmOutput(-0.15);
-    }
-  }
-
-  public void setArmToClimbPos() {
-    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.35);
-    }
-    else {
-      setArmOutput(-0.15);
-    }
-  }
-
-  public boolean isNoteDetected() {
-    if (m_indexor.getSupplyCurrent() > 4) {
+  /**
+   *  Checks if the arm is above the setpoint
+   * 
+   * @return true if the arm is above the set point, otherwise false
+   */
+  public boolean isAboveSetpoint() {
+    if (setpoint <= pivotEncoderA.getPosition()) {
       return true;
     }
     else {
@@ -231,15 +150,80 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  /**
+   *  Checks if the arm is at a value
+   * 
+   * @param position the position to check
+   * @return true if the arm is at the set point, otherwise false
+   */
+  public boolean isAtPosition(double position) {
+    double lowerLimit = position - ArmProfile.kPivotPosThreshold;
+    double upperLimit = position + ArmProfile.kPivotPosThreshold;
+    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   *  Checks if the arm is above a value
+   * 
+   * @param position the position to check
+   * @return true if the arm is above the set point, otherwise false
+   */
+  public boolean isAbovePosition(double position) {
+    if (position <= pivotEncoderA.getPosition()) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   *  Checks if the arm is below a value
+   * 
+   * @param position the position to check
+   * @return true if the arm is beleow the set point, otherwise false
+   */
+  public boolean isBelowPosition(double position) {
+    if (pivotEncoderA.getPosition() <= position) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   *  Checks if the arm is above a value
+   * 
+   * @param commandedOutputFraction the speed to set to the motor
+   */
   public void setArmOutput(double commandedOutputFraction) {
     m_pivotA.set(commandedOutputFraction);
-    m_pivotB.set(commandedOutputFraction);
+    m_pivotB.follow(m_pivotA);
+    // m_pivotB.set(commandedOutputFraction);
   }
 
+  /**
+   *  Checks if the arm is above a value
+   * 
+   * @param commandedOutputFraction the speed to set to the motor
+   * @return true if the arm is reset, otheerwise
+   */
+  public boolean isArmReset() {
+    return isAtPosition(ArmProfile.pivotInitialPos);
+  }
+
+  /* indexor functions */
   public void setIndexorOuput(double commandedOutputFraction) {
     m_indexor.set(commandedOutputFraction);
   }
 
+  /* shooter functions */
   public void setShooterOutput(double commandedOutputFraction) {
     m_shooterA.set(commandedOutputFraction);
     m_shooterB.set(commandedOutputFraction);
@@ -249,6 +233,64 @@ public class Arm extends SubsystemBase {
     m_shooterA.set(commandedOutputFraction * 0.2);
     m_shooterB.set(commandedOutputFraction);
   }
+
+  /* assembled functions */
+  public void prepareToShoot(Intake s_Intake) {
+    setShooterOutput(ArmProfile.kShooterDefaultOutput);
+    //if (s_Vision.LinedUpWithSpeaker()) {
+      s_Intake.deployPlus();
+    //}
+  }
+  
+  public void fireAtSetPos(double commandedPos) {
+    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
+    setArmPos(commandedPos);
+    if (isAtSetpoint()) {
+      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
+    }
+  }
+  
+  public void fireAtSpeaker() {
+    fireAtSetPos(ArmProfile.kIndexorDefaultOutput);
+  }
+  
+  public void resetArm() {
+    setIndexorOuput(0);
+    setShooterOutput(0);
+    setArmPos(ArmProfile.pivotInitialPos);
+  }
+  
+  public boolean isArmClearForClimb() {
+    return isAbovePosition(ArmProfile.kpivotAmpPos);
+  }
+  
+  public void dropNoteInAmp() {
+    setArmPos(ArmProfile.kpivotAmpPos);
+    if (isAtSetpoint()){
+      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
+    }
+    else {
+      setIndexorOuput(0);
+    }
+  }
+  
+  public void setArmToClimbPos() {
+    setArmPos(ArmProfile.kpivotAmpPos);
+  }
+  
+  public boolean isNoteDetected() {
+    if (m_indexor.getSupplyCurrent() > 4) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  // private double getPivotPosForDistance(double targetdistance){
+  //   double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
+  //   return requiredPos;
+  // }
 
   // private void setArmFWDSoftLimit() {
   //   if (pivotEncoderA.getPosition() >= ArmProfile.kPivotSoftLiimitFwd) {

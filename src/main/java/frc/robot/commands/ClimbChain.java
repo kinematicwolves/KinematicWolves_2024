@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 
+import frc.robot.Constants.ArmProfile;
+
 public class ClimbChain extends Command {
   private Climber s_Climber;
   private Arm s_Arm;
@@ -35,7 +37,7 @@ public class ClimbChain extends Command {
   @Override
   public void end(boolean interrupted) {
     s_Climber.setClimberOutput(0);
-    s_Arm.setArmPos();
+    s_Arm.setArmPos(ArmProfile.kpivotAmpPos);
   }
 
   // Returns true when the command should end.
