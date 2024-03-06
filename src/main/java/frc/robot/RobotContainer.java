@@ -161,8 +161,8 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterAmpOutput)))
         .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
         new JoystickButton(technition, XboxController.Button.kY.value) // Y = Climbers
-        .onTrue(new InstantCommand(() -> s_Climber.setClimberOutput(ClimberProfile.climberDefaultOutput)))
-        .onFalse(new InstantCommand(() -> s_Climber.setClimberOutput(0)));
+        .onTrue(new InstantCommand(() -> s_Intake.enableIntake(s_Arm, s_Lighting)))
+        .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
     }
 
     /**

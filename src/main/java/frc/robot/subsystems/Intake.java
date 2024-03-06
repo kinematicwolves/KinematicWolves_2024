@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -27,8 +28,7 @@ public class Intake extends SubsystemBase {
 
   private SparkPIDController wristController = m_wrist.getPIDController();
        
-  //private TimeOfFlight distanceSensor = new TimeOfFlight(0);
-  //private double safeZoneSensor = distanceSensor.getRange();
+  private TimeOfFlight distanceSensor = new TimeOfFlight(0);
 
   /** Creates a new Intake. */
   public Intake() {
@@ -135,6 +135,15 @@ public class Intake extends SubsystemBase {
     }
     else {
       return false;
+    }
+  }
+
+  public void enableIntake(Arm s_Arm, Lighting s_Lighting) {
+    if (distanceSensor.getRange() <= 5) {
+      resetIntake(s_Arm, s_Lighting);
+    }
+    else {
+      deployAndIntake(s_Arm);
     }
   }
 
