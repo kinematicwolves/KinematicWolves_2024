@@ -4,6 +4,8 @@
 
 package frc.robot.RobotStates;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lighting;
 
@@ -15,20 +17,21 @@ public class SetEnabledState extends Command {
   public SetEnabledState(Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Lighting = lighting;
-    matchTimer = 0;
+    matchTimer = 120000;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    matchTimer = 0;
+    matchTimer = 120000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    matchTimer += 20;
+    matchTimer -= 20;
     s_Lighting.setTeleOpLightShow();
+    SmartDashboard.putNumber("Match Time Remaining", Units.millisecondsToSeconds(matchTimer));
   }
 
   // Called once the command ends or is interrupted.
