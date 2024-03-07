@@ -195,7 +195,7 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.45);
+      setArmOutput(0.55);
     }
     else {
       setArmOutput(-0.15);
