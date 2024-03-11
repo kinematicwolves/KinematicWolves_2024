@@ -15,10 +15,11 @@ public class IntakeNote extends Command {
   private Lighting s_Lighting;
 
   /** Creates a new IntakeControl. */
-  public IntakeNote(Intake intake, Arm arm) {
+  public IntakeNote(Intake intake, Arm arm, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
+    s_Lighting = lighting;
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +29,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.deployAndIntake(s_Arm);
+    s_Intake.enableIntake(s_Arm, s_Lighting);
   }
 
   // Called once the command ends or is interrupted.

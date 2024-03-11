@@ -214,7 +214,7 @@ public final class Constants {
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        public static final double openLoopRamp = 6;
+        public static final double openLoopRamp = 5.5;
         public static final double closedLoopRamp = 0.05;
 
         /* Angle Motor PID Values */
@@ -223,9 +223,9 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.8;
+        public static final double driveKP = 0.9;
         public static final double driveKI = 0.0;
-        public static final double driveKD = 0.5;
+        public static final double driveKD = 0.1;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
@@ -235,9 +235,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 2.8;// // 4.99m/s before weight
+        public static final double maxSpeed = 2.7;// // 4.99m/s before weight
         /** Radians per Second */
-        public static final double maxAngularVelocity = 3.5; // 13.99r/s before weight
+        public static final double maxAngularVelocity = 3; // 13.99r/s before weight
         /** Fractional Percentage **/
         public static final double speedCap = 0.4; // Must be configured
 
@@ -271,7 +271,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 6;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(2.90);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-95.36);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -281,11 +281,11 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(1.93);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(5.87);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-
+// print("kinematic wolves rulez")
         /* Backup Moudles Specific Constants */
         /** Backup Module 1: TODO: This must be configured
             public static final int driveMotorID = 7;
@@ -316,8 +316,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final double kMaxSpeedMetersPerSecond = 4;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     

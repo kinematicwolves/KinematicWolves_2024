@@ -132,10 +132,10 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(ArmProfile.kArmDefaultOutput);
+      setArmOutput(0.33);
     }
     else {
-      setArmOutput(ArmProfile.kArmDefaultOutput * -0.25); // 20% negitive output
+      setArmOutput(0.15); // 20% negitive output
     }
   }
 
@@ -195,7 +195,7 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.55);
+      setArmOutput(0.5);
     }
     else {
       setArmOutput(-0.15);
@@ -213,15 +213,6 @@ public class Arm extends SubsystemBase {
     }
     else {
       setArmOutput(-0.15);
-    }
-  }
-
-  public boolean isNoteDetected() {
-    if (m_indexor.getSupplyCurrent() > 4) {
-      return true;
-    }
-    else {
-      return false;
     }
   }
 
@@ -256,7 +247,7 @@ public class Arm extends SubsystemBase {
     //setArmFWDSoftLimit();
     isArmReset();
 
-    SmartDashboard.putBoolean("Note Collected", isNoteDetected());
+   // SmartDashboard.putBoolean("Note Collected", isNoteDetected());
    // SmartDashboard.putBoolean("Arm is Reset", isArmReset());
 
    SmartDashboard.putNumber("Indexor Current", m_indexor.getSupplyCurrent());

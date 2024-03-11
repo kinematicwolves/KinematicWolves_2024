@@ -35,7 +35,7 @@ public class DefaultAuto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
               List.of(new Translation2d(0.5, 0)),
-              new Pose2d(1.48, 0, new Rotation2d(0.053)),
+              new Pose2d(1.9, 0, new Rotation2d(0.15)),
                 config);
 
         Trajectory backup2Trajectory =
@@ -43,7 +43,7 @@ public class DefaultAuto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
               List.of(new Translation2d(0.5, 0)),
-              new Pose2d(0.6, 0, new Rotation2d(-0.04)),
+              new Pose2d(0.5, 0, new Rotation2d(0.04)),
                 config);
 
         var thetaController =
@@ -75,12 +75,12 @@ public class DefaultAuto extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 2.5),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 2.4),
             new InstantCommand(() -> s_Swerve.setPose(backupTrajectory.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
-            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 19900, 3),
+            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24100, 3),
             new InstantCommand(() -> s_Swerve.setPose(backup2Trajectory.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),

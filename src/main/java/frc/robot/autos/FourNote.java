@@ -21,8 +21,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class RDefault extends SequentialCommandGroup {
-    public RDefault(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class FourNote extends SequentialCommandGroup {
+    public FourNote(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -30,20 +30,28 @@ public class RDefault extends SequentialCommandGroup {
                 .setKinematics(SwerveProfile.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-        Trajectory rotate =
+        Trajectory rightNoteTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, 0.4)),
-              new Pose2d(1.19, 0.26, new Rotation2d(0.24)),
+              List.of(new Translation2d(0.5, -0.5)),
+              new Pose2d(1.9, -1.61, new Rotation2d(0.49)),
                 config);
 
-        Trajectory backup =
+        Trajectory middNoteTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-               List.of(new Translation2d(0.25, 0.2)),
-               new Pose2d(0.5, 0.4, new Rotation2d(0.24)),
+              List.of(new Translation2d(-1.6, 0.1)),
+              new Pose2d(-0.32, 1.5, new Rotation2d(-0.13)),
+                config);
+
+        Trajectory leftNoteTrajectory =
+            TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                new Pose2d(0, 0, new Rotation2d(0)),
+              List.of(new Translation2d(-1.3, 0.5)),
+              new Pose2d(-0.2, 1.5, new Rotation2d(-0.05)),
                 config);
 
         var thetaController =
@@ -53,7 +61,7 @@ public class RDefault extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                rotate,
+                rightNoteTrajectory,
                 s_Swerve::getPose,
                 SwerveProfile.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -64,7 +72,7 @@ public class RDefault extends SequentialCommandGroup {
 
                 SwerveControllerCommand swerveControllerCommand2 =
                 new SwerveControllerCommand(
-                    backup,
+                    middNoteTrajectory,
                     s_Swerve::getPose,
                     SwerveProfile.swerveKinematics,
                     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -72,18 +80,33 @@ public class RDefault extends SequentialCommandGroup {
                     thetaController,
                     s_Swerve::setModuleStates,
                     s_Swerve);
+
+                SwerveControllerCommand swerveControllerCommand3 =
+                new SwerveControllerCommand(
+                    leftNoteTrajectory,
+                    s_Swerve::getPose,
+                    SwerveProfile.swerveKinematics,
+                    new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                    new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                    thetaController,
+                    s_Swerve::setModuleStates,
+                    s_Swerve);
+
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new InstantCommand(() -> s_Swerve.setPose(rotate.getInitialPose())),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 1.8),
+            new InstantCommand(() -> s_Swerve.setPose(rightNoteTrajectory.getInitialPose())),
             swerveControllerCommand,
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24000, 2.6),
-           // new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3.1),
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2.6),
-            new InstantCommand(() -> s_Swerve.setPose(backup.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
+            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 1.9),
+            new InstantCommand(() -> s_Swerve.setPose(middNoteTrajectory.getInitialPose())),
             swerveControllerCommand2,
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
+            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
+            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 1.8),
+            // new InstantCommand(() -> s_Swerve.setPose(leftNoteTrajectory.getInitialPose())),
+            // swerveControllerCommand3
             new InstantCommand(() -> s_Lighting.setDisabledLightShow())
         );
     }

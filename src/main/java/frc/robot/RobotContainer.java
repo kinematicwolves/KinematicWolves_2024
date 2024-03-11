@@ -23,6 +23,7 @@ import frc.robot.autos.BackUp;
 // import frc.robot.TechnitionCommands.ArmControl;
 // import frc.robot.TechnitionCommands.WristControl;
 import frc.robot.autos.DefaultAuto;
+import frc.robot.autos.FourNote;
 import frc.robot.autos.RDefault;
 import frc.robot.autos.TimedIntakeNote;
 import frc.robot.commands.ClimbChain;
@@ -104,7 +105,7 @@ public class RobotContainer {
 
         /* Chooser for Auton Commands */
         m_AutoChooser.setDefaultOption("Default Auto", new DefaultAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("Right Default", new RDefault(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
 
@@ -126,7 +127,7 @@ public class RobotContainer {
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        .whileTrue(new IntakeNote(s_Intake, s_Arm));
+        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kB.value)
         .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(-0.4)))
         .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
@@ -161,8 +162,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterAmpOutput)))
         .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
         new JoystickButton(technition, XboxController.Button.kY.value) // Y = Climbers
-        .onTrue(new InstantCommand(() -> s_Intake.enableIntake(s_Arm, s_Lighting)))
-        .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
+        .onTrue(new TimedIntakeNote(s_Intake, s_Arm, s_Lighting));
+        //.onTrue(new InstantCommand(() -> s_Intake.enableIntake(s_Arm, s_Lighting)))
+        //.onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
     }
 
     /**

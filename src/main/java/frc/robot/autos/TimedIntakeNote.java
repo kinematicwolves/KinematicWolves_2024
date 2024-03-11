@@ -15,40 +15,33 @@ public class TimedIntakeNote extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
   private Lighting s_Lighting;
-  private double seconds;
-  private int timer;
 
-  public TimedIntakeNote(Intake intake, Arm arm, Lighting lighting, double seconds) {
+  public TimedIntakeNote(Intake intake, Arm arm, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
     s_Lighting = lighting;
-    this.seconds = seconds;
-    timer = 0;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    timer += 20;
-    s_Intake.deployAndIntake(s_Arm);
+    s_Intake.enableIntake(s_Arm, s_Lighting);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Intake.resetIntake(s_Arm, s_Lighting);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer >= Units.secondsToMilliseconds(seconds);
+    return (s_Intake.isNoteDetected() == true);
   }
 }

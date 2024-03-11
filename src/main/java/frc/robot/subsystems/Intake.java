@@ -139,11 +139,20 @@ public class Intake extends SubsystemBase {
   }
 
   public void enableIntake(Arm s_Arm, Lighting s_Lighting) {
-    if (distanceSensor.getRange() <= 5) {
+    if (distanceSensor.getRange() <= 90) {
       resetIntake(s_Arm, s_Lighting);
     }
     else {
       deployAndIntake(s_Arm);
+    }
+  }
+
+  public boolean isNoteDetected() {
+    if (distanceSensor.getRange() <= 90) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -162,10 +171,12 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("noteCollected", isNoteDetected());
     SmartDashboard.putNumber("Inner Intake Current Output (Amps)", m_innerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Outer Intkake Current Output (Amps)", m_outerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Wrist Current Output (Amps)", m_wrist.getOutputCurrent());
     SmartDashboard.putBoolean("Intake++ is Deployed", isIntakePlusEnabled());
     SmartDashboard.putNumber("Wrist Encoder Counts", wristEncoder.getPosition());
+    SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());
   }
 }
