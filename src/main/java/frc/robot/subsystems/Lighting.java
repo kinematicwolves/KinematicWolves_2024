@@ -35,8 +35,8 @@ public class Lighting extends SubsystemBase {
   }
 
   public void setTeleOpLightShow() {
-    //animation = new TwinkleAnimation(10, 225, 10, 100, 1, LightingProfile.numLEDStrip, TwinklePercent.Percent100);
-    animation = new ColorFlowAnimation(0, 225, 10, 100, 0.8, LightingProfile.numLEDStrip, Direction.Forward);
+    animation = new TwinkleAnimation(0, 225, 10, 100, 1, LightingProfile.numLEDStrip, TwinklePercent.Percent100);
+    //animation = new ColorFlowAnimation(0, 225, 10, 100, 0.8, LightingProfile.numLEDStrip, Direction.Forward);
   }
 
   public void setDisabledLightShow() {

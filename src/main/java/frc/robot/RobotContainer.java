@@ -22,10 +22,10 @@ import frc.robot.RobotStates.SetTestState;
 import frc.robot.autos.BackUp;
 // import frc.robot.TechnitionCommands.ArmControl;
 // import frc.robot.TechnitionCommands.WristControl;
-import frc.robot.autos.DefaultAuto;
-import frc.robot.autos.FourNote;
-import frc.robot.autos.RDefault;
-import frc.robot.autos.TimedIntakeNote;
+import frc.robot.autos.ThreeNoteLeft;
+import frc.robot.autos.ThreeNoteRight;
+import frc.robot.autos.TwoNoteLeft;
+import frc.robot.autos.AutoIntakeNote;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
 import frc.robot.commands.IntakeNote;
@@ -104,11 +104,12 @@ public class RobotContainer {
         //     () -> -technition.getRawAxis(armAxis)));
 
         /* Chooser for Auton Commands */
-        m_AutoChooser.setDefaultOption("Default Auto", new DefaultAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.setDefaultOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("3 Note Right", new ThreeNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("3 Note Left", new ThreeNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("2 Note Left", new TwoNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
-
+        
         // A chooser for TeleOp Initialization Commands
         m_TeleOpInitChooser.setDefaultOption("Match Mode", new SetEnabledState(s_Lighting));
         m_TeleOpInitChooser.addOption("Test mode", new SetTestState(s_Lighting));
@@ -124,6 +125,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
+        new JoystickButton(driver, XboxController.Button.kBack.value) //Back = Force Intake Up
+        .onTrue(new InstantCommand(() -> s_Intake.setWristOutput(-0.14)))
+        .onFalse(new InstantCommand(() -> s_Intake.setWristOutput(0)));
+        new JoystickButton(driver, XboxController.Button.kStart.value) //Start = Zero Encoder
+        .onTrue(new InstantCommand(() -> s_Intake.resetWristEncoder()));
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
@@ -162,7 +168,7 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterAmpOutput)))
         .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
         new JoystickButton(technition, XboxController.Button.kY.value) // Y = Climbers
-        .onTrue(new TimedIntakeNote(s_Intake, s_Arm, s_Lighting));
+        .onTrue(new AutoIntakeNote(s_Intake, s_Arm, s_Lighting));
         //.onTrue(new InstantCommand(() -> s_Intake.enableIntake(s_Arm, s_Lighting)))
         //.onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
     }

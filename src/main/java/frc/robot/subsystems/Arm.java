@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase {
       setArmOutput(0.38);
     }
     else {
-      setArmOutput(-0.15);
+      setArmOutput(-0.18);
     }
   }
 
@@ -135,7 +135,7 @@ public class Arm extends SubsystemBase {
       setArmOutput(0.33);
     }
     else {
-      setArmOutput(0.15); // 20% negitive output
+      setArmOutput(-0.15); // 20% negitive output
     }
   }
 
@@ -148,10 +148,10 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(ArmProfile.kArmDefaultOutput);
+      setArmOutput(0.4);
     }
     else {
-      setArmOutput(-0.15);
+      setArmOutput(-0.16);
     }
   }
 

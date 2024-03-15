@@ -21,38 +21,38 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class FourNote extends SequentialCommandGroup {
-    public FourNote(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class ThreeNoteRight extends SequentialCommandGroup {
+    public ThreeNoteRight(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 .setKinematics(SwerveProfile.swerveKinematics);
 
-        // An example trajectory to follow.  All units in meters.
-        Trajectory rightNoteTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, -0.5)),
-              new Pose2d(1.9, -1.61, new Rotation2d(0.49)),
-                config);
+        Trajectory middleNote =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(new Translation2d(0.5, 0)),
+          new Pose2d(1.9, 0, new Rotation2d(0.15)),
+            config);
 
-        Trajectory middNoteTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(-1.6, 0.1)),
-              new Pose2d(-0.32, 1.5, new Rotation2d(-0.13)),
-                config);
+        Trajectory leftNote =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(new Translation2d(-1.4, -1.5)),
+          new Pose2d(0, -2, new Rotation2d(0.0)),
+            config);
 
-        Trajectory leftNoteTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(-1.3, 0.5)),
-              new Pose2d(-0.2, 1.5, new Rotation2d(-0.05)),
-                config);
+
+        Trajectory backUp =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(new Translation2d(0.5, 0)),
+          new Pose2d(1, 0, new Rotation2d(-0.1)),
+            config);
 
         var thetaController =
             new ProfiledPIDController(
@@ -61,7 +61,7 @@ public class FourNote extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                rightNoteTrajectory,
+                middleNote,
                 s_Swerve::getPose,
                 SwerveProfile.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -72,7 +72,7 @@ public class FourNote extends SequentialCommandGroup {
 
                 SwerveControllerCommand swerveControllerCommand2 =
                 new SwerveControllerCommand(
-                    middNoteTrajectory,
+                    leftNote,
                     s_Swerve::getPose,
                     SwerveProfile.swerveKinematics,
                     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -80,10 +80,10 @@ public class FourNote extends SequentialCommandGroup {
                     thetaController,
                     s_Swerve::setModuleStates,
                     s_Swerve);
-
-                SwerveControllerCommand swerveControllerCommand3 =
+                
+                SwerveControllerCommand swerveControllerCommand3=
                 new SwerveControllerCommand(
-                    leftNoteTrajectory,
+                    backUp,
                     s_Swerve::getPose,
                     SwerveProfile.swerveKinematics,
                     new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -94,19 +94,18 @@ public class FourNote extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 1.8),
-            new InstantCommand(() -> s_Swerve.setPose(rightNoteTrajectory.getInitialPose())),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 1.7),
+            new InstantCommand(() -> s_Swerve.setPose(middleNote.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
-            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 1.9),
-            new InstantCommand(() -> s_Swerve.setPose(middNoteTrajectory.getInitialPose())),
+            new AutoIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2),
+            new InstantCommand(() -> s_Swerve.setPose(leftNote.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
-            new TimedIntakeNote(s_Intake, s_Arm, s_Lighting),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 1.8),
-            // new InstantCommand(() -> s_Swerve.setPose(leftNoteTrajectory.getInitialPose())),
-            // swerveControllerCommand3
+            new AutoIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new InstantCommand(() -> s_Swerve.setPose(backUp.getInitialPose())),
+            swerveControllerCommand3,
             new InstantCommand(() -> s_Lighting.setDisabledLightShow())
         );
     }

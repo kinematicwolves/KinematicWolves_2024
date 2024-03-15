@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
     m_wrist.setSmartCurrentLimit(IntakeProfile.kWristCurrentLimit);
     m_outerRoller.configPeakCurrentLimit(IntakeProfile.kRollerCurrentLimit);
 
-    m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, false);
     m_wrist.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_wrist.setSoftLimit(SoftLimitDirection.kReverse, (float)IntakeProfile.kInitialPos);
     m_wrist.setSoftLimit(SoftLimitDirection.kForward, (float)IntakeProfile.kDeployedPos);
@@ -124,7 +124,7 @@ public class Intake extends SubsystemBase {
       //s_lighting.setTeleOpLightShow();
     }
     else {
-      m_wrist.set(-0.1);
+      m_wrist.set(-0.12);
       m_wrist.setIdleMode(IdleMode.kBrake);
     }
   }
@@ -139,7 +139,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void enableIntake(Arm s_Arm, Lighting s_Lighting) {
-    if (distanceSensor.getRange() <= 90) {
+    if (distanceSensor.getRange() <= 100) {
       resetIntake(s_Arm, s_Lighting);
     }
     else {
@@ -148,12 +148,16 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isNoteDetected() {
-    if (distanceSensor.getRange() <= 90) {
+    if (distanceSensor.getRange() <= 100) {
       return true;
     }
     else {
       return false;
     }
+  }
+
+  public void resetWristEncoder() {
+    wristEncoder.setPosition(0);
   }
 
   public void setInnerRollerOutput(double commandedOutputFraction) {

@@ -10,13 +10,13 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 
-public class TimedIntakeNote extends Command {
+public class AutoIntakeNote extends Command {
   /** Creates a new TimedShootNote. */
   private Intake s_Intake;
   private Arm s_Arm;
   private Lighting s_Lighting;
 
-  public TimedIntakeNote(Intake intake, Arm arm, Lighting lighting) {
+  public AutoIntakeNote(Intake intake, Arm arm, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;

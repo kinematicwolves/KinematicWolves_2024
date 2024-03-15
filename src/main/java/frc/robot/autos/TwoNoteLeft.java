@@ -21,8 +21,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class RDefault extends SequentialCommandGroup {
-    public RDefault(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class TwoNoteLeft extends SequentialCommandGroup {
+    public TwoNoteLeft(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -30,20 +30,20 @@ public class RDefault extends SequentialCommandGroup {
                 .setKinematics(SwerveProfile.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-        Trajectory rotate =
+        Trajectory leftNote =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, 0.4)),
-              new Pose2d(1.19, 0.26, new Rotation2d(0.24)),
+              List.of(new Translation2d(0.9, 0.5), (new Translation2d(1.7, -0.8))),
+              new Pose2d(3.8, -0.3, new Rotation2d(-0.23)),
                 config);
 
         Trajectory backup =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-               List.of(new Translation2d(0.25, 0.2)),
-               new Pose2d(0.5, 0.4, new Rotation2d(0.24)),
+               List.of(new Translation2d(0.5, 0)),
+               new Pose2d(1, 0, new Rotation2d(0.1)),
                 config);
 
         var thetaController =
@@ -53,7 +53,7 @@ public class RDefault extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                rotate,
+                leftNote,
                 s_Swerve::getPose,
                 SwerveProfile.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -74,13 +74,12 @@ public class RDefault extends SequentialCommandGroup {
                     s_Swerve);
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new InstantCommand(() -> s_Swerve.setPose(rotate.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.setPose(leftNote.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24000, 2.6),
-           // new TimedIntakeNote(s_Intake, s_Arm, s_Lighting, 3.1),
-            new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2.6),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24000, 2),
+            new AutoIntakeNote(s_Intake, s_Arm, s_Lighting),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2),
             new InstantCommand(() -> s_Swerve.setPose(backup.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),

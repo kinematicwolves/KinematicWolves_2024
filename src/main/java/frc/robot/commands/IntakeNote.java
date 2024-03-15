@@ -30,6 +30,12 @@ public class IntakeNote extends Command {
   @Override
   public void execute() {
     s_Intake.enableIntake(s_Arm, s_Lighting);
+    if (s_Intake.isNoteDetected() == true) {
+      s_Lighting.setTeleOpLightShow();;
+    }
+    else {
+      s_Lighting.setOrangeLightShow();;
+    }
   }
 
   // Called once the command ends or is interrupted.
