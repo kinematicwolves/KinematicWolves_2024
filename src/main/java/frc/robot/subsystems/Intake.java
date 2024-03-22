@@ -83,6 +83,19 @@ public class Intake extends SubsystemBase {
     // }
   }
 
+    public void intakeNoPlus(Arm s_Arm) {
+    //deployPlus();
+    //if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
+      //setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
+      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
+      s_Arm.setIndexorOuput(1);
+    //}
+    // else if (safeZoneSensor <= IntakeProfile.kPlusSafeZone) {
+    //   IntakeButHoldThePlus(s_Arm);
+    // }
+  }
+
+
   // private void IntakeButHoldThePlus(Arm s_Arm) {
   //   if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
   //     setWristOutput(0);

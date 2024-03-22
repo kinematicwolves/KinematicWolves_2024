@@ -59,8 +59,8 @@ public class Arm extends SubsystemBase {
     /* Arm Software Limiting */
     m_pivotA.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotB.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, false);
-    m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, false);
+    m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_pivotB.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_pivotA.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
     m_pivotB.setSoftLimit(SoftLimitDirection.kReverse, (float)ArmProfile.kPivotSoftLimitRvs);
     m_pivotA.setSoftLimit(SoftLimitDirection.kForward, (float)ArmProfile.kPivotSoftLiimitFwd);

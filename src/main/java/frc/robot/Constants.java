@@ -43,7 +43,7 @@ public final class Constants {
 
     /* Soft Limits */
     public static final double kPivotSoftLimitRvs = 0.0;
-    public static final double kPivotSoftLiimitFwd = 23830;
+    public static final double kPivotSoftLiimitFwd = 54000;
 
     /* Arm Threshold and Setpoints */
     public static final double kPivotPosThreshold = 550;
@@ -83,7 +83,7 @@ public final class Constants {
     public static final int innerRoller = 22;
 
     /* Current Limiting */
-    public static final int kWristCurrentLimit = 30;
+    public static final int kWristCurrentLimit = 25;
     public static final int kRollerCurrentLimit = 25;
 
     /* Wrist Threshold and Setpoints */
@@ -235,11 +235,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 2;// // 4.99m/s before weight
+        public static final double maxSpeed = 1.8;// // 4.99m/s before weight
         /** Radians per Second */
-        public static final double maxAngularVelocity = 2; // 13.99r/s before weight
+        public static final double maxAngularVelocity = 1.8; // 13.99r/s before weight
         /** Fractional Percentage **/
-        public static final double speedCap = 0.5; // Must be configured
+        public static final double speedCap = 0.38; // Must be configured
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
