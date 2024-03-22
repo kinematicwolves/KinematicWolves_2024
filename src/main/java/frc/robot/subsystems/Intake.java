@@ -151,6 +151,10 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  public void storeNote(Arm s_Arm) {
+    
+  }
+
   public void enableIntake(Arm s_Arm, Lighting s_Lighting) {
     if (distanceSensor.getRange() <= 100) {
       resetIntake(s_Arm, s_Lighting);

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
@@ -33,7 +34,7 @@ public class PreClimbState extends Command {
   public void execute() {
     s_Climber.setClimberToClimbPos();
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.setArmToClimbPos();
+      s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 0.38, 0.15);
     }
   }
 

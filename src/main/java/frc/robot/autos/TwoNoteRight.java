@@ -77,9 +77,9 @@ public class TwoNoteRight extends SequentialCommandGroup {
             new InstantCommand(() -> s_Swerve.setPose(leftNote.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, false)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24100, 2),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24100, 0.32, 0.15, 2),
             new AutoIntakeNote(s_Intake, s_Arm, s_Lighting),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 2),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 25000, 0.32, 0.15, 2),
             // Smaller number = higher shooter angle
             new InstantCommand(() -> s_Swerve.setPose(backup.getInitialPose())),
             swerveControllerCommand2,

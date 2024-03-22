@@ -32,8 +32,7 @@ public class TimedDumpNote extends Command {
   @Override
   public void initialize() {
     timer = 0;
-    s_Intake.deployPlus();
-    s_Arm.setAmpShooterOutput(ArmProfile.kShooterAmpOutput);
+    s_Arm.prepareToDump(s_Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,14 +40,14 @@ public class TimedDumpNote extends Command {
   public void execute() {
     timer += 20;
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.dropNoteInAmp();
-      }
+      s_Arm.fireAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      s_Arm.resetArm();
+      s_Arm.resetArmPivot();
       s_Intake.resetIntakeForAmp(s_Arm, s_Lighting);
   }
 

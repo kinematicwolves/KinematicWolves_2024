@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -15,9 +16,9 @@ import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.math.LinearInterpolation;
 import frc.lib.util.PIDGains;
 import frc.robot.Constants.ArmProfile;
+import frc.robot.Constants.IntakeProfile;
 
 public class Arm extends SubsystemBase {
   private CANSparkMax m_pivotA = new CANSparkMax(ArmProfile.pivotMotorID_A, MotorType.kBrushless);
@@ -33,7 +34,7 @@ public class Arm extends SubsystemBase {
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
-  //private DigitalInput indexorSensor = new DigitalInput(ArmProfile.noteDetectorChannel);
+  private TimeOfFlight indexorSensor = new TimeOfFlight(0);
 
   /** Creates a new Arm. */
   public Arm() {
@@ -85,62 +86,32 @@ public class Arm extends SubsystemBase {
     m_pivotB.burnFlash();
   }
 
-  /* Set Arm To Position Logic:
-   * When arm is at commanded position:
-   *    -Set arm to 0 (brake mode will hold it in place)
-   * When arm is higher then commanded position:
-   *    -Set arm output to -12%
-   * When are is lower then commanded position:
-   *    -Set arm output to 50%
-   */
-  public void setArmPos() {
-    double lowerLimit = 50000 - 800;
-    double upperLimit = 50000 + 600;
+  public void setArmPivotPos(double commandedPivotPos, double upwardOutput, double downwardOutput) {
+    double lowerLimit = commandedPivotPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = commandedPivotPos + ArmProfile.kPivotPosThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
       setArmOutput(0);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.38);
+      setArmOutput(upwardOutput);
     }
     else {
-      setArmOutput(-0.18);
+      setArmOutput(-downwardOutput);
     }
   }
 
-  /* Prepare Robot to Shoot Function Logic:
-   * -Set shooter motors to 100%
-   * -Deploy Intake Plus Plus
-   */
   public void prepareToShoot(Intake s_Intake) {
     setShooterOutput(ArmProfile.kShooterDefaultOutput);
-    //if (s_Vision.LinedUpWithSpeaker()) {
-      s_Intake.deployPlus();
-    //}
+    s_Intake.deployPlus();
   }
 
-  // private double getPivotPosForDistance(double targetdistance){
-  //   double requiredPos = LinearInterpolation.linearInterpolation(ArmProfile.TargetDistanceArray, ArmProfile.ArmPosArray, targetdistance);
-  //   return requiredPos;
-  // }
-
-  public void fireAtSpeaker() {
-    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
-    double lowerLimit = ArmProfile.kpivotSpeakerPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotSpeakerPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.33);
-    }
-    else {
-      setArmOutput(-0.15); // 20% negitive output
-    }
+  public void prepareToDump(Intake s_Intake) {
+    s_Intake.deployPlus();
+    m_shooterA.set(ArmProfile.kShooterAmpOutput * 0.2);
+    m_shooterB.set(ArmProfile.kShooterAmpOutput);
   }
 
-  public void fireAtSetPos(double commandedPos) {
-    //double commandedOutputPos = getPivotPosForDistance(s_Vision.getFilteredDistance());
+  public void fireAtSetPos(double commandedPos, double upwardOutput, double downwardOutput) {
     double lowerLimit = commandedPos - ArmProfile.kPivotPosThreshold;
     double upperLimit = commandedPos + ArmProfile.kPivotPosThreshold;
     if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
@@ -148,15 +119,14 @@ public class Arm extends SubsystemBase {
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
     }
     else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.4);
+      setArmOutput(upwardOutput);
     }
     else {
-      setArmOutput(-0.16);
+      setArmOutput(-downwardOutput);
     }
   }
 
-
-  public void resetArm() {
+  public void resetArmPivot() {
     setIndexorOuput(0);
     setShooterOutput(0);
     double upperLimit = ArmProfile.pivotInitialPos + ArmProfile.kPivotPosThreshold;
@@ -169,8 +139,8 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public boolean isArmReset() {
-    if (pivotEncoderA.getPosition() <= ArmProfile.pivotInitialPos + ArmProfile.kPivotPosThreshold) {
+  public boolean isNoteStowed() {
+    if (indexorSensor.getRange() <= 80) {
       return true;
     }
     else {
@@ -178,41 +148,14 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public boolean isArmClearForClimb() {
-    if (pivotEncoderA.getPosition() >= ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold) {
-      return true;
+  public void stowNote(Intake s_Intake) {
+    if (isNoteStowed() == true) {
+      m_indexor.set(0);
+      s_Intake.setInnerRollerOutput(0);
     }
     else {
-      return false;
-    }
-  }
-
-  public void dropNoteInAmp() {
-    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-      setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.5);
-    }
-    else {
-      setArmOutput(-0.15);
-    }
-  }
-
-  public void setArmToClimbPos() {
-    double lowerLimit = ArmProfile.kpivotAmpPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = ArmProfile.kpivotAmpPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
-      setArmOutput(0);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(0.35);
-    }
-    else {
-      setArmOutput(-0.15);
+      m_indexor.set(ArmProfile.kIndexorDefaultOutput);
+      s_Intake.setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
     }
   }
 
@@ -230,31 +173,13 @@ public class Arm extends SubsystemBase {
     m_shooterB.set(commandedOutputFraction);
   } 
 
-  public void setAmpShooterOutput(double commandedOutputFraction) {
-    m_shooterA.set(commandedOutputFraction * 0.2);
-    m_shooterB.set(commandedOutputFraction);
-  }
-
-  // private void setArmFWDSoftLimit() {
-  //   if (pivotEncoderA.getPosition() >= ArmProfile.kPivotSoftLiimitFwd) {
-  //     setArmPos(ArmProfile.kPivotSoftLiimitFwd - ArmProfile.kPivotPosThreshold);
-  //   }
-  // }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //setArmFWDSoftLimit();
-    isArmReset();
-
-   // SmartDashboard.putBoolean("Note Collected", isNoteDetected());
-   // SmartDashboard.putBoolean("Arm is Reset", isArmReset());
-
-   SmartDashboard.putNumber("Indexor Current", m_indexor.getSupplyCurrent());
-    
+    SmartDashboard.putBoolean("isNoteStored", isNoteStowed());
     SmartDashboard.putNumber("Arm Position", pivotEncoderA.getPosition());
-    SmartDashboard.putNumber("Neo Current (A) ", m_pivotA.getOutputCurrent());
-    SmartDashboard.putNumber("Neo Current (B)", m_pivotB.getOutputCurrent());
-    SmartDashboard.putNumber("Combined Neo Current", m_pivotA.getOutputCurrent() + m_pivotB.getOutputCurrent());
+    SmartDashboard.putNumber("Indexor Current", m_indexor.getSupplyCurrent());
+    SmartDashboard.putNumber("Arm Motor Currents ", m_pivotA.getOutputCurrent());
+    SmartDashboard.putNumber("Shooter Motor Currents", m_shooterA.getSupplyCurrent());
   }
 }

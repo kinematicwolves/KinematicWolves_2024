@@ -95,12 +95,12 @@ public class ThreeNoteLeft extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 1.7),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, ArmProfile.kpivotSpeakerPos, 0.3, 0.15, 1.7),
             new InstantCommand(() -> s_Swerve.setPose(middleNote.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),
             new AutoIntakeNote(s_Intake, s_Arm, s_Lighting),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24800, 2),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 24800, 0.32, 0.15, 2),
             new InstantCommand(() -> s_Swerve.setPose(leftNote.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, true, false)),

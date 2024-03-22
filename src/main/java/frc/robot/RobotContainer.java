@@ -18,7 +18,6 @@ import frc.robot.Constants.ControllerProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
-import frc.robot.RobotStates.SetTestState;
 import frc.robot.autos.AutoIntakeNote;
 import frc.robot.autos.BackUp;
 import frc.robot.autos.OneNoteLeft;
@@ -60,7 +59,6 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
@@ -70,7 +68,6 @@ public class RobotContainer {
 
     /* Sendable Choosers */
     SendableChooser<Command> m_AutoChooser = new SendableChooser<>();
-    SendableChooser<Command> m_TeleOpInitChooser = new SendableChooser<>();
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -96,12 +93,12 @@ public class RobotContainer {
             )
         );
 
-        /* Uncomment this for technition wrist control */
+        /* Uncomment for technition wrist control */
         // s_Intake.setDefaultCommand(new WristControl(
         //     s_Intake,
         //     () -> -technition.getRawAxis(wristAxis)));
             
-        /* Uncomment this for technition arm control */
+        /* Uncomment for technition arm control */
         // s_Arm.setDefaultCommand(new ArmControl(
         //     s_Arm, 
         //     () -> -technition.getRawAxis(armAxis)));
@@ -115,11 +112,6 @@ public class RobotContainer {
         m_AutoChooser.addOption("1 Note Red", new OneNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("1 Note Blue", new OneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
-        
-        // A chooser for TeleOp Initialization Commands
-        m_TeleOpInitChooser.setDefaultOption("Match Mode", new SetEnabledState(s_Lighting));
-        m_TeleOpInitChooser.addOption("Test mode", new SetTestState(s_Lighting));
-        SmartDashboard.putData(m_TeleOpInitChooser);
     }
 
     /**
@@ -130,7 +122,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading())); // Y = Zero Gryo
+        new JoystickButton(driver, XboxController.Button.kY.value) // Y = Zero Gryo
+        .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         new JoystickButton(driver, XboxController.Button.kBack.value) //Back = Force Intake Up
         .onTrue(new InstantCommand(() -> s_Intake.setWristOutput(-0.14)))
         .onFalse(new InstantCommand(() -> s_Intake.setWristOutput(0)));
@@ -190,7 +183,7 @@ public class RobotContainer {
 
     // Command to reset robot to initial teleop lightshow/state
     public Command getTeleOpInitCommand() {
-        return m_TeleOpInitChooser.getSelected();        
+        return new SetEnabledState(s_Lighting);     
     }
 
     // Command to reset robot to initial sisabled lightshow/state

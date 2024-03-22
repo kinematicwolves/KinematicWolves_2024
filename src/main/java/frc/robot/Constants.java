@@ -36,7 +36,6 @@ public final class Constants {
     public static final int indexorID = 17;
     public static final int shooterID_A = 18;
     public static final int shooterID_B = 19;
-    public static final int noteDetectorChannel = 9; //TODO: This must be configured
 
     /* Current Limiting */
     public static final int kPivotCurrentLimit = 40;
@@ -61,7 +60,7 @@ public final class Constants {
     /* Set Outputs */
     public static final double kArmDefaultOutput = 0.35;
     public static final double kIndexorDefaultOutput = 1;
-    public static final double kShooterDefaultOutput = 1;
+    public static final double kShooterDefaultOutput = 0.9;
     public static final double kShooterAmpOutput = 0.4;
 
     /* Arm PID Gains */
@@ -93,9 +92,6 @@ public final class Constants {
     public static final double kDeployedLowerLimitPos = kDeployedPos - kWristCurrentLimit;
     public static final double kInitailUpperLimitPos = kInitialPos + kWristThreshhold;
 
-    /* Intake Safe Zone Distance (In Milimeters) */
-    public static final double kPlusSafeZone = 1000; // TODO: This must be configured
-
     /* Conversion Factors */
     public static final int neoEncoderCountsPerRev = 42;    
     public static final double kWristGearRatio = 70 / 1;
@@ -108,7 +104,7 @@ public final class Constants {
 
     /* Set Outputs */
     public static final double kOuterDefaultOutput = 1;
-    public static final double kInnerDefaultOutput = 0.8;
+    public static final double kInnerDefaultOutput = 1;
   }
 
   public static class ClimberProfile {

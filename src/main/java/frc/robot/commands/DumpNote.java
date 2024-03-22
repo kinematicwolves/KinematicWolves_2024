@@ -26,28 +26,22 @@ public class DumpNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_Intake.deployPlus();
-    s_Arm.setAmpShooterOutput(ArmProfile.kShooterAmpOutput);
+    s_Arm.prepareToDump(s_Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.dropNoteInAmp();
+      s_Arm.fireAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
     }
-    // if (s_Arm.isArmReset() == true) {
-    //   s_Intake.resetIntake(s_Arm, s_Lighting);
-    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArm();
-    //if (s_Arm.isArmReset() == true) 
-      s_Intake.resetIntakeForAmp(s_Arm, s_Lighting);
-  //}
+    s_Arm.resetArmPivot();
+    s_Intake.resetIntakeForAmp(s_Arm, s_Lighting);
   }
 
   // Returns true when the command should end.

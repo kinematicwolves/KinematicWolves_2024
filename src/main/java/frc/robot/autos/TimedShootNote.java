@@ -16,15 +16,19 @@ public class TimedShootNote extends Command {
   private Arm s_Arm;
   private Lighting s_Lighting;
   private double pivotAngle;
+  private double upwardOutput;
+  private double downwardOutput;
   private double seconds;
   private int timer;
 
-  public TimedShootNote(Intake intake, Arm arm, Lighting lighting, double pivotAngle, double seconds) {
+  public TimedShootNote(Intake intake, Arm arm, Lighting lighting, double pivotAngle, double upwardOutput, double downwardOutput, double seconds) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
     s_Lighting = lighting;
     this.pivotAngle = pivotAngle;
+    this.upwardOutput = upwardOutput;
+    this.downwardOutput = downwardOutput;
     this.seconds = seconds;
     timer = 0;
   }
@@ -41,18 +45,14 @@ public class TimedShootNote extends Command {
   public void execute() {
     timer += 20;
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.fireAtSetPos(pivotAngle);
+      s_Arm.fireAtSetPos(pivotAngle, upwardOutput, downwardOutput);
       }
-    // if (timer >= Units.secondsToMilliseconds(seconds)) {
-    //   s_Arm.resetArm();
-    //   s_Intake.resetIntake(s_Arm, s_Lighting);
-    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArm();
+    s_Arm.resetArmPivot();
     s_Intake.resetIntake(s_Arm, s_Lighting);
   }
 

@@ -31,10 +31,11 @@ public class IntakeNote extends Command {
   public void execute() {
     s_Intake.enableIntake(s_Arm, s_Lighting);
     if (s_Intake.isNoteDetected() == true) {
-      s_Lighting.setTeleOpLightShow();;
+      s_Lighting.setTeleOpLightShow();
+      s_Arm.stowNote(s_Intake);
     }
     else {
-      s_Lighting.setOrangeLightShow();;
+      s_Lighting.setOrangeLightShow();
     }
   }
 
