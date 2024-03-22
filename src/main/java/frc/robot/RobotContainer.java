@@ -39,7 +39,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -73,7 +72,6 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
     private final Arm s_Arm = new Arm();
     private final Intake s_Intake = new Intake();
-    private final Vision s_Vision = new Vision();
     private final Climber s_Climber = new Climber();
     private final Lighting s_Lighting = new Lighting();
 
@@ -137,7 +135,7 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> s_Intake.intakeNoPlus(s_Arm)))
         .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker
-        .whileTrue(new ShootNote(s_Swerve, s_Vision, s_Intake, s_Arm, s_Lighting));
+        .whileTrue(new ShootNote(s_Swerve, s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Shoot In Amp
         .whileTrue(new DumpNote(s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kBack.value) // Back = Climbers to First State

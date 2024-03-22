@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LimelightProfile;
 import frc.robot.Constants.SwerveProfile;
 import frc.robot.SwerveModule;
 
@@ -109,18 +108,6 @@ public class Swerve extends SubsystemBase {
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
-        }
-    }
-
-    public void rotateDrivetrainToTarget(Vision s_Vision) {
-        if (s_Vision.LinedUpWithSpeaker()) {
-            drive(new Translation2d(0,0), 0, true, false);
-        }
-        else if (s_Vision.getFilteredHorizontalAngle() < (-1 * LimelightProfile.alignWindow)) {
-            drive(new Translation2d(0,0), -0.5, true, false);
-        }
-        else if (s_Vision.getFilteredHorizontalAngle() > LimelightProfile.alignWindow) {
-            drive(new Translation2d(0, 0), 0.5, true, false);
         }
     }
 

@@ -36,6 +36,7 @@ public final class Constants {
     public static final int indexorID = 17;
     public static final int shooterID_A = 18;
     public static final int shooterID_B = 19;
+    public static final int irSensorPort = 9; //TODO: Must be configured
 
     /* Current Limiting */
     public static final int kPivotCurrentLimit = 40;
@@ -65,14 +66,6 @@ public final class Constants {
 
     /* Arm PID Gains */
     public static final PIDGains kArmPositionGains = new PIDGains(0.1, 0.0, 0.0);
-
-    // Tables for arm position vs distance
-    public static final double[] ArmPosArray = {
-        1, 2, 3
-    }; 
-    public static final double[] TargetDistanceArray = {
-        4, 5, 6
-    };
   }
 
   public static class IntakeProfile {
@@ -156,16 +149,6 @@ public final class Constants {
 
     /* Total Number of Led's */
     public static final int numLEDStrip = 88;
-  }
-
-  public static class LimelightProfile { //TODO: All must be configured
-    public static final double limelightVerticalAngle = 0;
-    public static final double speakerHeightInches = 0;
-    public static final double limelightHeightInches = 0;
-    public static final int aprilTagPipeline = 0;
-    public static final int visionProcessorEntry = 0;
-    public static final int driverCameraEntry = 1;
-    public static final int alignWindow = 2;
   }
 
   public static final class SwerveProfile {

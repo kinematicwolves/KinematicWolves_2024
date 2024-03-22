@@ -40,7 +40,7 @@ public class TimedDumpNote extends Command {
   public void execute() {
     timer += 20;
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.fireAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
+      s_Arm.launchAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
     }
   }
 

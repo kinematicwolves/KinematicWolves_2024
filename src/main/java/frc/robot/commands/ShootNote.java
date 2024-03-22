@@ -10,7 +10,6 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 
 public class ShootNote extends Command {
   private Intake s_Intake;
@@ -18,7 +17,7 @@ public class ShootNote extends Command {
   private Lighting s_Lighting;
 
   /** Creates a new ShootNote. */
-  public ShootNote(Swerve swerve, Vision vision, Intake intake, Arm arm, Lighting lighting) {
+  public ShootNote(Swerve swerve, Intake intake, Arm arm, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
@@ -36,7 +35,7 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     if (s_Intake.isIntakePlusEnabled() == true) {
-    s_Arm.fireAtSetPos(ArmProfile.kpivotSpeakerPos, 0.3, 0.15);
+    s_Arm.launchAtSetPos(ArmProfile.kpivotSpeakerPos, 0.3, 0.15);
     }
   }
 

@@ -45,7 +45,7 @@ public class TimedShootNote extends Command {
   public void execute() {
     timer += 20;
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.fireAtSetPos(pivotAngle, upwardOutput, downwardOutput);
+      s_Arm.launchAtSetPos(pivotAngle, upwardOutput, downwardOutput);
       }
   }
 

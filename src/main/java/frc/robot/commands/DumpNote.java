@@ -33,7 +33,7 @@ public class DumpNote extends Command {
   @Override
   public void execute() {
     if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.fireAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
+      s_Arm.launchAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
     }
   }
 
