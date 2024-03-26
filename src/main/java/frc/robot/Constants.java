@@ -59,10 +59,9 @@ public final class Constants {
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
 
     /* Set Outputs */
-    public static final double kArmDefaultOutput = 0.35;
-    public static final double kIndexorDefaultOutput = 1;
-    public static final double kShooterDefaultOutput = 0.9;
-    public static final double kShooterAmpOutput = 0.4;
+    public static final double kIndexorDefaultOutput = 100;
+    public static final double kShooterDefaultOutput = 90;
+    public static final double kShooterAmpOutput = 40;
 
     /* Arm PID Gains */
     public static final PIDGains kArmPositionGains = new PIDGains(0.1, 0.0, 0.0);
@@ -76,14 +75,16 @@ public final class Constants {
 
     /* Current Limiting */
     public static final int kWristCurrentLimit = 25;
-    public static final int kRollerCurrentLimit = 25;
+    public static final int kOuterRollerCurrentLimit = 25;
+    public static final int kInnerRollerCurrentLimit = 25;
 
-    /* Wrist Threshold and Setpoints */
-    public static final double kWristThreshhold = 600;
-    public static final int kInitialPos = 0;
-    public static final double kDeployedPos = 10000;
-    public static final double kDeployedLowerLimitPos = kDeployedPos - kWristCurrentLimit;
-    public static final double kInitailUpperLimitPos = kInitialPos + kWristThreshhold;
+    /* Wrist Threshold and Setpoints */ //TODO: Must be configured for new through bore sensor
+    public static final double wristPosOffset = -0.12;
+    public static final double wristPosInversion = 1; // Or -1. Down Positive
+    public static final double kWristThreshhold = 0.07;
+    public static final double kInitialPos = 0 + kWristThreshhold;
+    public static final double kDeployedPos = 0.24 - kWristThreshhold;
+    public static final double noteDetectedDistance = 90; // Distance in millimeters
 
     /* Conversion Factors */
     public static final int neoEncoderCountsPerRev = 42;    
@@ -95,9 +96,11 @@ public final class Constants {
     /* Wrist PID Gains */
     public static final PIDGains kWristPositionGains = new PIDGains(0.1, 0.0, 0.0);
 
-    /* Set Outputs */
-    public static final double kOuterDefaultOutput = 1;
-    public static final double kInnerDefaultOutput = 1;
+    /* Default Percent Outputs */
+    public static final double kOuterDefaultOutput = 90;
+    public static final double kInnerDefaultOutput = 100;
+    public static final double kWristDefaultOutput = 18;
+    public static final double kWristSlowOutput = 11;
   }
 
   public static class ClimberProfile {

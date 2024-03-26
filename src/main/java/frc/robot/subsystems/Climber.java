@@ -12,6 +12,7 @@ import frc.robot.Constants.ClimberProfile;
 import frc.robot.Robot;
 
 public class Climber extends SubsystemBase {
+  /** Climber Motors */
   private TalonFX m_climberA = new TalonFX(ClimberProfile.climberA_ID);
   private TalonFX m_climberB = new TalonFX(ClimberProfile.climberB_ID);
 
@@ -45,7 +46,12 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean isClimberMaxHeight() {
-    return climberIsMaxHeight;
+    if (m_climberA.getPosition().getValue() >= ClimberProfile.climberMaxHeightPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   public void setClimberOutput(double commandedOutputFraction) {

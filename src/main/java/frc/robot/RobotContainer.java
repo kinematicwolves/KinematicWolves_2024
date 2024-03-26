@@ -33,6 +33,7 @@ import frc.robot.commands.DumpNote;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.PreClimbState;
 import frc.robot.commands.ShootNote;
+import frc.robot.commands.StowNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -122,22 +123,19 @@ public class RobotContainer {
         /* Driver Buttons */
         new JoystickButton(driver, XboxController.Button.kY.value) // Y = Zero Gryo
         .onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        new JoystickButton(driver, XboxController.Button.kBack.value) //Back = Force Intake Up
-        .onTrue(new InstantCommand(() -> s_Intake.setWristOutput(-0.14)))
-        .onFalse(new InstantCommand(() -> s_Intake.setWristOutput(0)));
-        new JoystickButton(driver, XboxController.Button.kStart.value) //Start = Zero Encoder
-        .onTrue(new InstantCommand(() -> s_Intake.resetWristEncoder()));
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
-        new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Intake No plus
-        .onTrue(new InstantCommand(() -> s_Intake.intakeNoPlus(s_Arm)))
-        .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
+        new JoystickButton(munipulator, XboxController.Button.kA.value)
+        .whileTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
+        // new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Intake No plus
+        // .onTrue(new InstantCommand(() -> s_Intake.smartIntakeWithoutPlusPlus(s_Arm, s_Intake, s_Lighting)))
+        // .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput)));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker
         .whileTrue(new ShootNote(s_Swerve, s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Shoot In Amp
-        .whileTrue(new DumpNote(s_Intake, s_Arm, s_Lighting));
+        .whileTrue(new DumpNote(s_Intake, s_Arm));
         new JoystickButton(munipulator, XboxController.Button.kBack.value) // Back = Climbers to First State
         .whileTrue(new PreClimbState(s_Intake, s_Arm, s_Climber)); 
         new JoystickButton(munipulator, XboxController.Button.kStart.value) // Start = Climb Chain

@@ -33,7 +33,7 @@ public class PreClimbState extends Command {
   @Override
   public void execute() {
     s_Climber.setClimberToClimbPos();
-    if (s_Intake.isIntakePlusEnabled() == true) {
+    if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 0.38, 0.15);
     }
   }

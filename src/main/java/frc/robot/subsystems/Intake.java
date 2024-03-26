@@ -14,158 +14,77 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.PIDGains;
 import frc.robot.Constants.IntakeProfile;
 
 public class Intake extends SubsystemBase {
+  /** Wrist Motor */
   private CANSparkMax m_wrist = new CANSparkMax(IntakeProfile.wristID, MotorType.kBrushless);
-  private WPI_TalonSRX m_outerRoller = new WPI_TalonSRX(IntakeProfile.outerRoller);
-  private WPI_TalonSRX m_innerRoller = new WPI_TalonSRX(IntakeProfile.innerRoller);
 
+  /** Wrist Encoder */
   private RelativeEncoder wristEncoder = m_wrist.getEncoder(SparkRelativeEncoder.Type.kHallSensor, IntakeProfile.neoEncoderCountsPerRev);
 
+  /** Wrist Controller */
   private SparkPIDController wristController = m_wrist.getPIDController();
-       
-  private TimeOfFlight distanceSensor = new TimeOfFlight(0);
 
-  /** Creates a new Intake. */
+  /** Roller Motors */
+  private WPI_TalonSRX m_outerRoller = new WPI_TalonSRX(IntakeProfile.outerRoller);
+  private WPI_TalonSRX m_innerRoller = new WPI_TalonSRX(IntakeProfile.innerRoller);
+  
+  /** Sensors */
+  private TimeOfFlight distanceSensor = new TimeOfFlight(0);
+  private DutyCycleEncoder throughBoreEncoder = new DutyCycleEncoder(7);
+
+  /** Initaliaztion Box */
   public Intake() {
+    /** Faactory Resets & Fault Clears */
     m_wrist.restoreFactoryDefaults();
     m_outerRoller.configFactoryDefault();
     m_innerRoller.configFactoryDefault();
-
     m_wrist.clearFaults();
 
+    /** Inversion Factors */
     m_wrist.setInverted(false);
     m_outerRoller.setInverted(true);
     m_innerRoller.setInverted(true);
 
+    /** Current Limits */
     m_wrist.setSmartCurrentLimit(IntakeProfile.kWristCurrentLimit);
-    m_outerRoller.configPeakCurrentLimit(IntakeProfile.kRollerCurrentLimit);
+    m_outerRoller.configPeakCurrentLimit(IntakeProfile.kOuterRollerCurrentLimit);
+    m_innerRoller.configPeakCurrentLimit(IntakeProfile.kInnerRollerCurrentLimit);
 
+    /** Software Limits */
     m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, false);
     m_wrist.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_wrist.setSoftLimit(SoftLimitDirection.kReverse, (float)IntakeProfile.kInitialPos);
     m_wrist.setSoftLimit(SoftLimitDirection.kForward, (float)IntakeProfile.kDeployedPos);
 
+    /* Wrist Idle Mode */
     m_wrist.setIdleMode(IdleMode.kBrake);
 
+    /* Wrist Positioning Conversion Factor */
     wristEncoder.setPositionConversionFactor(IntakeProfile.kPositionFactor);
     wristEncoder.setVelocityConversionFactor(IntakeProfile.kVelocityFactor);
     wristEncoder.setPosition(IntakeProfile.kInitialPos);
 
+    /* Wrist Gains */
     PIDGains.setSparkMaxGains(wristController, IntakeProfile.kWristPositionGains);
 
+    /** Flash Wrist Controller Configs */
     m_wrist.burnFlash();
+
   }
 
-  public void deployPlus() {
-    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
-      setWristOutput(0);
-      m_wrist.setIdleMode(IdleMode.kCoast);
-    }
-    else {
-      m_wrist.set(0.25);
-    }
-  }
-
-  public void deployAndIntake(Arm s_Arm) {
-    deployPlus();
-    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
-      setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
-      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
-      s_Arm.setIndexorOuput(1);
-    }
-    // else if (safeZoneSensor <= IntakeProfile.kPlusSafeZone) {
-    //   IntakeButHoldThePlus(s_Arm);
-    // }
-  }
-
-    public void intakeNoPlus(Arm s_Arm) {
-    //deployPlus();
-    //if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
-      //setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
-      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
-      s_Arm.setIndexorOuput(1);
-    //}
-    // else if (safeZoneSensor <= IntakeProfile.kPlusSafeZone) {
-    //   IntakeButHoldThePlus(s_Arm);
-    // }
-  }
-
-
-  // private void IntakeButHoldThePlus(Arm s_Arm) {
-  //   if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
-  //     setWristOutput(0);
-  //     setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
-  //     s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-  //     m_wrist.setIdleMode(IdleMode.kBrake);
-  //   }
-  //   else if (wristEncoder.getPosition() >= IntakeProfile.kInitailUpperLimitPos) {
-  //     setWristOutput(-0.1);
-  //   }
-  //   else {
-  //     m_wrist.set(-0.8);
-  //     setOuterRollerOutput(0);
-  //   }
-  // }
-
-  public void resetIntake(/*double wristRetractionOutputFraction,*/ Arm s_Arm, Lighting s_lighting) {
-    setInnerRollerOutput(0);
-    setOuterRollerOutput(0);
-    s_Arm.setIndexorOuput(0);
-    if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
-      setWristOutput(0);
-      m_wrist.setIdleMode(IdleMode.kBrake);
-      //s_lighting.setTeleOpLightShow();
-    }
-    else {
-      m_wrist.set(-0.18);
-      m_wrist.setIdleMode(IdleMode.kBrake);
-    }
-  }
-
-  public void resetIntakeForAmp(/*double wristRetractionOutputFraction,*/ Arm s_Arm, Lighting s_lighting) {
-    setInnerRollerOutput(0);
-    setOuterRollerOutput(0);
-    s_Arm.setIndexorOuput(0);
-    if (wristEncoder.getPosition() <= IntakeProfile.kInitailUpperLimitPos) {
-      setWristOutput(0);
-      m_wrist.setIdleMode(IdleMode.kBrake);
-      //s_lighting.setTeleOpLightShow();
-    }
-    else {
-      m_wrist.set(-0.12);
-      m_wrist.setIdleMode(IdleMode.kBrake);
-    }
-  }
-
-  public boolean isIntakePlusEnabled() {
-    if (wristEncoder.getPosition() >= IntakeProfile.kDeployedLowerLimitPos) {
-    return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  public void storeNote(Arm s_Arm) {
-    
-  }
-
-  public void enableIntake(Arm s_Arm, Lighting s_Lighting) {
-    if (distanceSensor.getRange() <= 100) {
-      resetIntake(s_Arm, s_Lighting);
-    }
-    else {
-      deployAndIntake(s_Arm);
-    }
-  }
-
-  public boolean isNoteDetected() {
-    if (distanceSensor.getRange() <= 100) {
+  /**
+   * Distance sensor looks for note is inside inner intake
+   * 
+   * @return true if note is in range, otherwise false
+   */
+  public boolean noteDetected() {
+    if (distanceSensor.getRange() <= IntakeProfile.noteDetectedDistance) {
       return true;
     }
     else {
@@ -173,31 +92,170 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public void resetWristEncoder() {
-    wristEncoder.setPosition(0);
+  /**
+   * Filtered through bore encoder count position of wrist
+   * 
+   * @return (encoder count +(-) factory offset error) * (-)1
+   */
+  public double getFilteredWristPos() {
+    return (throughBoreEncoder.getAbsolutePosition() + IntakeProfile.wristPosOffset) * IntakeProfile.wristPosInversion;
   }
 
-  public void setInnerRollerOutput(double commandedOutputFraction) {
-    m_innerRoller.set(commandedOutputFraction);
+  /**
+   * Checks if intake is in initial position
+   * 
+   * @return true if intake position is less than or equal to 1, otherwise false
+   */
+  public boolean intakePlusUndeployed() {
+    if (getFilteredWristPos() <= IntakeProfile.kInitialPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if intake is in deployed position
+   * 
+   * @return true if encoder count is greater than or equal to 9, otherwise false
+   */
+  public boolean intakePlusDeployed() {
+    if (getFilteredWristPos() >= IntakeProfile.kDeployedPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   * Deploys plus plus with no roller output
+   */
+  public void deployPlus() {
+    if (intakePlusDeployed() == true) {
+      setWristOutput(0);
+      m_wrist.setIdleMode(IdleMode.kCoast);
+    }
+    else {
+      setWristOutput(25);
+    }
+  }
+
+  /**
+   * Brings intake plus back up
+   * 
+   * @param wristOutputFraction output fraction to bring intake back up
+   */
+  public void undeployPlus(double wristOutputPercent) {
+    setOuterRollerOutput(0);
+    if (intakePlusUndeployed() == true) {
+      setWristOutput(0);
+    }
+    else {
+      setWristOutput(-wristOutputPercent);
+      m_wrist.setIdleMode(IdleMode.kBrake);
+    }
+  }
+
+  /**
+   * Zero's roller outputs and brings up intake+ at default speed
+   * 
+   * @param s_Arm calls arm subsytem to zero converyor output
+   */
+  public void resetIntake(Arm s_Arm, double wristPercentOutput) {
+    undeployPlus(wristPercentOutput);
+    setInnerRollerOutput(0);
+    s_Arm.setIndexorOuput(0);
+    }
+
+  /**
+   * Intakes with ++ but does not refrence note sensor
+   * 
+   * @param s_Arm calls arm subsytem for conveyor control
+   */
+  public void intakePlusPlus(Arm s_Arm) {
+    deployPlus();
+    if (intakePlusDeployed() == true) {
+      setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
+      setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
+      s_Arm.setIndexorOuput(50);
+    }
+  }
+
+  /**
+   * Intakes with ++ until note collected
+   * 
+   * @param s_Arm calls arm subsytem for conveyor control
+   * @param s_Lighting calls lighting subsytem for intake status
+   */
+  // public void smartIntakePlusPlus(Arm s_Arm, Intake s_Intake, Lighting s_Lighting) {
+  //   intakePlusPlus(s_Arm);
+  //   s_Lighting.setOrangeLightShow();
+  //   if (noteDetected() == true) {
+  //     resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
+  //     s_Lighting.setTeleOpLightShow();
+  //   }
+  // }
+
+  /**
+   * Intakes with inner intake only until note collected
+   * 
+   * @param s_Arm calls arm subsytem for conveyor control
+   * @param s_Lighting calls lighting subsytem for intake status
+   */
+  // public void smartIntakeWithoutPlusPlus(Arm s_Arm, Intake s_Intake, Lighting s_Lighting) {
+  //   if (noteDetected() == true) {
+  //     undeployPlus(IntakeProfile.kWristDefaultOutput);
+  //     s_Arm.stowNote(s_Intake);
+  //     s_Lighting.setTeleOpLightShow();
+  //   }
+  //   else {
+  //     intakePlusPlus(s_Arm);
+  //     s_Lighting.setOrangeLightShow();
+  //   }
+  // }
+
+  /**
+   * Runs inner roller at a commanded percentage
+   * 
+   * @param outputPercent commanded output percent / 100
+   */
+  public void setInnerRollerOutput(double outputPercent) {
+    m_innerRoller.set(outputPercent / 100);
   } 
 
-  public void setOuterRollerOutput(double commandedOutputFraction) {
-    m_outerRoller.set(commandedOutputFraction);
+  /**
+   * Runs outer roller at a commanded percentage
+   * 
+   * @param outputPercent commanded output percent / 100
+   */
+  public void setOuterRollerOutput(double outputPercent) {
+    m_outerRoller.set(outputPercent / 100);
   } 
 
-  public void setWristOutput(double commandedOutputFraction) {
-    m_wrist.set(commandedOutputFraction);
+  /**
+   * Runs wrist motor at a commanded percentage
+   * 
+   * @param outputPercent
+   */
+  public void setWristOutput(double outputPercent) {
+    m_wrist.set(outputPercent / 100);
   }
 
   @Override
+  /** This method will be called once per scheduler run */
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("noteCollected", isNoteDetected());
+    /** Current Readouts */
     SmartDashboard.putNumber("Inner Intake Current Output (Amps)", m_innerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Outer Intkake Current Output (Amps)", m_outerRoller.getSupplyCurrent());
     SmartDashboard.putNumber("Wrist Current Output (Amps)", m_wrist.getOutputCurrent());
-    SmartDashboard.putBoolean("Intake++ is Deployed", isIntakePlusEnabled());
-    SmartDashboard.putNumber("Wrist Encoder Counts", wristEncoder.getPosition());
+
+    /** Sensor Readouts */
     SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());
+    SmartDashboard.putBoolean("Note Detected", noteDetected());
+    SmartDashboard.putBoolean("Intake+ is Deployed", intakePlusDeployed());
+    SmartDashboard.putNumber("Raw Intake Position", throughBoreEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Intake Position", getFilteredWristPos());
   }
 }

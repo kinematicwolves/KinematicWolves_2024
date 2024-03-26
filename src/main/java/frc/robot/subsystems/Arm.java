@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -41,11 +40,8 @@ public class Arm extends SubsystemBase {
   private SparkPIDController pivotControllerA = m_pivotA.getPIDController();
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
-  /** Indexor Distance Sensor */
-  private TimeOfFlight indexorSensor = new TimeOfFlight(0);
-
-  /** Backup Indexor Sensor */
-  private DigitalInput IRSensor = new DigitalInput(ArmProfile.irSensorPort);
+  /** Indexor Sensor */
+  private DigitalInput beamBreakSensor = new DigitalInput(ArmProfile.irSensorPort);
 
   /** Initaliaztion Box */
   public Arm() {
@@ -63,11 +59,11 @@ public class Arm extends SubsystemBase {
     m_shooterA.setInverted(false);
     m_shooterB.setInverted(false);
 
-    /** Arm Current Limiting */
+    /** Arm Current Limits */
     m_pivotA.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
     m_pivotB.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
 
-    /** Arm Software Limiting */
+    /** Arm Software Limits */
     m_pivotA.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotB.enableSoftLimit(SoftLimitDirection.kReverse, true);
     m_pivotA.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -91,7 +87,7 @@ public class Arm extends SubsystemBase {
     PIDGains.setSparkMaxGains(pivotControllerA, ArmProfile.kArmPositionGains);
     PIDGains.setSparkMaxGains(pivotControllerB, ArmProfile.kArmPositionGains);
 
-    /** Flash Arm Controllers with Set Config */
+    /** Flash Arm Controllers Configs */
     m_pivotA.burnFlash();
     m_pivotB.burnFlash();
   }
@@ -113,11 +109,57 @@ public class Arm extends SubsystemBase {
    * @param s_Intake Calls intake subsystem to deploy intake++
    */
   public void prepareToDump(Intake s_Intake) {
-    double fractionalSpeedDecay = 0.2;
+    double percentageSpeedDecay = 20;
 
-    m_shooterA.set(ArmProfile.kShooterAmpOutput * fractionalSpeedDecay);
+    m_shooterA.set(ArmProfile.kShooterAmpOutput * percentageSpeedDecay);
     m_shooterB.set(ArmProfile.kShooterAmpOutput);
     s_Intake.deployPlus();
+  }
+
+  /**
+   * Checks if arm is at commanded encoder count
+   * 
+   * @param commandedPivotPos pivot encoder input
+   * @return true if arm pivot is in between position thresholds, otherwise false
+   */
+  public boolean armAtSetPosition(double commandedPivotPos) {
+    double lowerLimit = commandedPivotPos - ArmProfile.kPivotPosThreshold;
+    double upperLimit = commandedPivotPos + ArmProfile.kPivotPosThreshold;
+
+    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   * Checks if arm is below commanded encoder count
+   * 
+   * @param commandedPivotPos pivot encoder input
+   * @return true if arm pivot is below position threshold, otherwise
+   */
+  public boolean armBelowSetPosition(double commandedPivotPos) {
+    double lowerLimit = commandedPivotPos - ArmProfile.kPivotPosThreshold;
+
+    if (pivotEncoderA.getPosition() <= lowerLimit) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public boolean armAboveSetPosition(double commandedPivotPos) {
+    double upperLimit = commandedPivotPos + ArmProfile.kPivotPosThreshold;
+
+    if (pivotEncoderA.getPosition() >= upperLimit) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   /**
@@ -127,17 +169,15 @@ public class Arm extends SubsystemBase {
    * @param upwardOutput positive pivot commanded outout fraction
    * @param downwardOutput negitive pivot commanded output fraction
    */
-  public void setArmPivotPos(double commandedPivotPos, double upwardOutput, double downwardOutput) {
-    double lowerLimit = commandedPivotPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = commandedPivotPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
+  public void setArmPivotPos(double commandedPivotPos, double upwardOutputPercent, double downwardOutputPercent) {
+    if (armAtSetPosition(commandedPivotPos) == true) {
       setArmOutput(0);
     }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(upwardOutput);
+    else if (armBelowSetPosition(commandedPivotPos) == true) {
+      setArmOutput(upwardOutputPercent);
     }
-    else {
-      setArmOutput(-downwardOutput);
+    else if (armAboveSetPosition(commandedPivotPos) == true) {
+      setArmOutput(-downwardOutputPercent);
     }
   }
 
@@ -150,18 +190,12 @@ public class Arm extends SubsystemBase {
    * @param upwardOutput positive pivot commanded outout fraction
    * @param downwardOutput negitive pivot commanded output fraction
    */
-  public void launchAtSetPos(double commandedPos, double upwardOutput, double downwardOutput) {
-    double lowerLimit = commandedPos - ArmProfile.kPivotPosThreshold;
-    double upperLimit = commandedPos + ArmProfile.kPivotPosThreshold;
-    if ((lowerLimit <= pivotEncoderA.getPosition()) && (pivotEncoderA.getPosition() <= upperLimit)) {
+  public void launchNoteAtSetPos(double commandedPos, double upwardOutputPercent, double downwardOutputPercent) {
+    setArmPivotPos(commandedPos, upwardOutputPercent, downwardOutputPercent);
+
+    if (armAtSetPosition(commandedPos) == true) {
       setArmOutput(0);
       setIndexorOuput(ArmProfile.kIndexorDefaultOutput);
-    }
-    else if (pivotEncoderA.getPosition() <= lowerLimit) {
-      setArmOutput(upwardOutput);
-    }
-    else {
-      setArmOutput(-downwardOutput);
     }
   }
 
@@ -172,21 +206,16 @@ public class Arm extends SubsystemBase {
   public void resetArmPivot() {
     setIndexorOuput(0);
     setShooterOutput(0);
-    setArmPivotPos(0, 0, 0);
+    setArmPivotPos(0, 0, 15);
   }
 
   /**
    * Checks if note is inside the middle of the indexor
    * 
-   * @return true if the note is in front of distance sensor, otherwise false
+   * @return true if the note breaks beam sensor, otherwise false
    */
-  public boolean isNoteStowed() {
-    if (indexorSensor.getRange() <= 80) {
-      return true;
-    }
-    else {
-      return false;
-    }
+  public boolean noteStowed() {
+    return beamBreakSensor.get();
   }
 
   /**
@@ -195,43 +224,43 @@ public class Arm extends SubsystemBase {
    * @param s_Intake Calls inner subsystem to run inner intake at 100%
    */
   public void stowNote(Intake s_Intake) {
-    if (isNoteStowed() == true) {
-      m_indexor.set(0);
+    if (noteStowed() == true) {
+      setIndexorOuput(0);
       s_Intake.setInnerRollerOutput(0);
     }
     else {
-      m_indexor.set(ArmProfile.kIndexorDefaultOutput);
-      s_Intake.setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
+      setIndexorOuput(30);
+      s_Intake.setInnerRollerOutput(100);
     }
   }
 
   /**
-   * Runs arm pivot motors
+   * Runs arm pivot motors at commanded percentage
    * 
-   * @param commandedOutputFraction Pivot motor output fraction
+   * @param outputPercent commanded output percentage / 100
    */
-  public void setArmOutput(double commandedOutputFraction) {
-    m_pivotA.set(commandedOutputFraction);
-    m_pivotB.set(commandedOutputFraction);
+  public void setArmOutput(double outputPercent) {
+    m_pivotA.set(outputPercent / 100);
+    m_pivotB.set(outputPercent / 100);
   }
 
   /**
-   * Runs indexor motor
+   * Runs indexor motor at commanded percentage
    * 
-   * @param commandedOutputFraction Indexor motor output fraction
+   * @param outputPercent commanded output percentage / 100
    */
-  public void setIndexorOuput(double commandedOutputFraction) {
-    m_indexor.set(commandedOutputFraction);
+  public void setIndexorOuput(double outputPercent) {
+    m_indexor.set(outputPercent / 100);
   }
 
   /**
-   * Runs both shooter motors
+   * Runs both shooter motors at commanded percentage
    * 
-   * @param commandedOutputFraction shooter motor's output fraction
+   * @param outputPercent commanded output percentage / 100
    */
-  public void setShooterOutput(double commandedOutputFraction) {
-    m_shooterA.set(commandedOutputFraction);
-    m_shooterB.set(commandedOutputFraction);
+  public void setShooterOutput(double outputPercent) {
+    m_shooterA.set(outputPercent / 100);
+    m_shooterB.set(outputPercent / 100);
   } 
 
   @Override
@@ -247,7 +276,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Motor Current's", m_shooterA.getSupplyCurrent());
 
     /** Sensor Readouts */
-    SmartDashboard.putBoolean("Note Is Stored", isNoteStowed());
-    //SmartDashboard.putBoolean("IR Sensor Value", IRSensor.get());
+    SmartDashboard.putBoolean("Note Is Stored", noteStowed());
+    //SmartDashboard.putBoolean("IR Sensor Value", beamBreakSensor.get());
   }
 }

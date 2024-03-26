@@ -5,6 +5,7 @@
 package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
@@ -30,7 +31,13 @@ public class AutoIntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.enableIntake(s_Arm, s_Lighting);
+    if (s_Intake.noteDetected() == true) {
+      s_Intake.undeployPlus(IntakeProfile.kWristDefaultOutput);
+      s_Arm.stowNote(s_Intake, s_Lighting);
+    }
+    else {
+      s_Intake.smartIntakePlusPlus(s_Arm, s_Intake, s_Lighting);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -41,6 +48,6 @@ public class AutoIntakeNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (s_Intake.isNoteDetected() == true);
+    return (s_Intake.noteDetected() == true);
   }
 }

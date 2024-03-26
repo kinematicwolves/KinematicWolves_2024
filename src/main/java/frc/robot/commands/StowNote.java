@@ -10,17 +10,17 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 
-public class IntakeNote extends Command {
-  private Intake s_Intake;
+public class StowNote extends Command {
   private Arm s_Arm;
+  private Intake s_Intake;
   private Lighting s_Lighting;
-
-  /** Creates a new IntakeControl. */
-  public IntakeNote(Intake intake, Arm arm, Lighting lighting) {
+  
+  /** Creates a new StowNote. */
+  public StowNote(Arm arm, Intake intake, Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
-    s_Arm = arm;
     s_Lighting = lighting;
+    s_Arm = arm;
   }
 
   // Called when the command is initially scheduled.
@@ -30,22 +30,15 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    s_Lighting.setRedLightShow();
     if (s_Intake.noteDetected() == true) {
-      s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-      s_Lighting.setTeleOpLightShow();
-    }
-    else {
-      s_Intake.intakePlusPlus(s_Arm);
-      s_Lighting.setOrangeLightShow();
+      s_Arm.stowNote(s_Intake);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-    s_Lighting.setTeleOpLightShow();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

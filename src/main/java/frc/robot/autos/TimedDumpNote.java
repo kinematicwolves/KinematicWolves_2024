@@ -7,6 +7,7 @@ package frc.robot.autos;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmProfile;
+import frc.robot.Constants.IntakeProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
@@ -39,8 +40,8 @@ public class TimedDumpNote extends Command {
   @Override
   public void execute() {
     timer += 20;
-    if (s_Intake.isIntakePlusEnabled() == true) {
-      s_Arm.launchAtSetPos(ArmProfile.kpivotAmpPos, 0.5, 0.15);
+    if (s_Intake.intakePlusDeployed() == true) {
+      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 48, 15);
     }
   }
 
@@ -48,7 +49,7 @@ public class TimedDumpNote extends Command {
   @Override
   public void end(boolean interrupted) {
       s_Arm.resetArmPivot();
-      s_Intake.resetIntakeForAmp(s_Arm, s_Lighting);
+      s_Intake.resetIntake(s_Arm, IntakeProfile.kWristSlowOutput);
   }
 
   // Returns true when the command should end.
