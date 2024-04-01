@@ -79,12 +79,12 @@ public final class Constants {
     public static final int kInnerRollerCurrentLimit = 25;
 
     /* Wrist Threshold and Setpoints */ //TODO: Must be configured for new through bore sensor
-    public static final double wristPosOffset = -0.12;
+    public static final double wristPosOffset = -0.121;
     public static final double wristPosInversion = 1; // Or -1. Down Positive
-    public static final double kWristThreshhold = 0.07;
+    public static final double kWristThreshhold = 0.02;
     public static final double kInitialPos = 0 + kWristThreshhold;
-    public static final double kDeployedPos = 0.24 - kWristThreshhold;
-    public static final double noteDetectedDistance = 90; // Distance in millimeters
+    public static final double kDeployedPos = 0.241 - kWristThreshhold;
+    public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */
     public static final int neoEncoderCountsPerRev = 42;    
@@ -99,7 +99,7 @@ public final class Constants {
     /* Default Percent Outputs */
     public static final double kOuterDefaultOutput = 90;
     public static final double kInnerDefaultOutput = 100;
-    public static final double kWristDefaultOutput = 18;
+    public static final double kWristDefaultOutput = 19;
     public static final double kWristSlowOutput = 11;
   }
 

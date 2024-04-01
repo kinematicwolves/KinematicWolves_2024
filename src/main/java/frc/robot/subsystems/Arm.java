@@ -13,6 +13,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,6 +44,8 @@ public class Arm extends SubsystemBase {
 
   /** Indexor Sensor */
   private DigitalInput beamBreakSensor = new DigitalInput(ArmProfile.irSensorPort);
+
+  private Debouncer m_Debouncer = new Debouncer(0.1, DebounceType.kRising);
 
   /** Initaliaztion Box */
   public Arm() {
@@ -109,10 +113,8 @@ public class Arm extends SubsystemBase {
    * @param s_Intake Calls intake subsystem to deploy intake++
    */
   public void prepareToDump(Intake s_Intake) {
-    double percentageSpeedDecay = 20;
-
-    m_shooterA.set(ArmProfile.kShooterAmpOutput * percentageSpeedDecay);
-    m_shooterB.set(ArmProfile.kShooterAmpOutput);
+    m_shooterA.set(0.1);
+    m_shooterB.set(0.35);
     s_Intake.deployPlus();
   }
 
@@ -203,10 +205,10 @@ public class Arm extends SubsystemBase {
    * Sets Shooter & Conveyor Motor to 0
    * Sets arm pivot to initial encoder position
    */
-  public void resetArmPivot() {
+  public void resetArmPivot(double downwardOutput) {
     setIndexorOuput(0);
     setShooterOutput(0);
-    setArmPivotPos(0, 0, 15);
+    setArmPivotPos(0, 0, downwardOutput);
   }
 
   /**
@@ -215,7 +217,7 @@ public class Arm extends SubsystemBase {
    * @return true if the note breaks beam sensor, otherwise false
    */
   public boolean noteStowed() {
-    return beamBreakSensor.get();
+    return m_Debouncer.calculate(beamBreakSensor.get());
   }
 
   /**
@@ -224,13 +226,11 @@ public class Arm extends SubsystemBase {
    * @param s_Intake Calls inner subsystem to run inner intake at 100%
    */
   public void stowNote(Intake s_Intake) {
+    setIndexorOuput(100);
+    s_Intake.setInnerRollerOutput(100);
     if (noteStowed() == true) {
       setIndexorOuput(0);
       s_Intake.setInnerRollerOutput(0);
-    }
-    else {
-      setIndexorOuput(30);
-      s_Intake.setInnerRollerOutput(100);
     }
   }
 

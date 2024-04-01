@@ -128,8 +128,11 @@ public class RobotContainer {
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kA.value)
-        .whileTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
-        // new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Intake No plus
+        .onFalse(new StowNote(s_Arm, s_Intake, s_Lighting)); // A = Intake 
+        // new JoystickButton(munipulator, XboxController.Button.kA.value)
+        // .whileTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
+        new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Intake No plus
+        .onTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
         // .onTrue(new InstantCommand(() -> s_Intake.smartIntakeWithoutPlusPlus(s_Arm, s_Intake, s_Lighting)))
         // .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput)));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker

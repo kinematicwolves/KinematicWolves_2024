@@ -53,7 +53,7 @@ public class TimedShootNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArmPivot();
+    s_Arm.resetArmPivot(15);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
   }
 

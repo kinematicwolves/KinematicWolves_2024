@@ -31,13 +31,13 @@ public class AutoIntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (s_Intake.noteDetected() == true) {
-      s_Intake.undeployPlus(IntakeProfile.kWristDefaultOutput);
-      s_Arm.stowNote(s_Intake, s_Lighting);
-    }
-    else {
-      s_Intake.smartIntakePlusPlus(s_Arm, s_Intake, s_Lighting);
-    }
+    // if (s_Intake.noteDetected() == true) {
+    //   s_Intake.undeployPlus(IntakeProfile.kWristDefaultOutput);
+    //   s_Arm.stowNote(s_Intake, s_Lighting);
+    // }
+    // else {
+    //   s_Intake.smartIntakePlusPlus(s_Arm, s_Intake, s_Lighting);
+    // }
   }
 
   // Called once the command ends or is interrupted.

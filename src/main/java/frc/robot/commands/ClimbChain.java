@@ -35,7 +35,8 @@ public class ClimbChain extends Command {
   @Override
   public void end(boolean interrupted) {
     s_Climber.setClimberOutput(0);
-    s_Arm.resetArmPivot();
+    s_Arm.resetArmPivot(20);
+    s_Arm.setIndexorOuput(-100);
   }
 
   // Returns true when the command should end.

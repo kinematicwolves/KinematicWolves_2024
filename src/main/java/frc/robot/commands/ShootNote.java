@@ -36,14 +36,14 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     if (s_Intake.intakePlusDeployed() == true) {
-    s_Arm.launchNoteAtSetPos(ArmProfile.kpivotSpeakerPos, 0.3, 0.15);
+    s_Arm.launchNoteAtSetPos(ArmProfile.kpivotSpeakerPos, 30, 15);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArmPivot();
+    s_Arm.resetArmPivot(15);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
   }
 

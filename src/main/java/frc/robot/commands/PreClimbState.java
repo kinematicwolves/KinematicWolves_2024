@@ -34,7 +34,7 @@ public class PreClimbState extends Command {
   public void execute() {
     s_Climber.setClimberToClimbPos();
     if (s_Intake.intakePlusDeployed() == true) {
-      s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 0.38, 0.15);
+      s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 38, 15);
     }
   }
 

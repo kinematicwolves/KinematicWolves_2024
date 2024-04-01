@@ -21,28 +21,49 @@ public class StowNote extends Command {
     s_Intake = intake;
     s_Lighting = lighting;
     s_Arm = arm;
+    //addRequirements(s_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // s_Lighting.setRedLightShow();
+    // s_Arm.setIndexorOuput(65);
+    // System.out.println("stow command initialization");
+    // s_Intake.setInnerRollerOutput(100);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Lighting.setRedLightShow();
     if (s_Intake.noteDetected() == true) {
-      s_Arm.stowNote(s_Intake);
+      //s_Lighting.setRedLightShow();
+      s_Arm.setIndexorOuput(65);
+      //System.out.println("run motors");
+      s_Intake.setInnerRollerOutput(100);
     }
+    // else if (s_Arm.noteStowed() == true) {
+    //   s_Lighting.setRedLightShow();
+    //   s_Arm.setIndexorOuput(0);
+    //   System.out.println("note is in");
+    //   s_Intake.setInnerRollerOutput(0);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    //System.out.println("end of stow command");
+    s_Arm.setIndexorOuput(0);
+    s_Lighting.setTeleOpLightShow();
+    s_Intake.setInnerRollerOutput(0);
+    s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    //System.out.println("End of stow command");
+    return s_Arm.noteStowed() == true;
   }
 }

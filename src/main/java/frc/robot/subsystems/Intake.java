@@ -58,7 +58,7 @@ public class Intake extends SubsystemBase {
 
     /** Software Limits */
     m_wrist.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    m_wrist.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_wrist.enableSoftLimit(SoftLimitDirection.kForward, false);
     m_wrist.setSoftLimit(SoftLimitDirection.kReverse, (float)IntakeProfile.kInitialPos);
     m_wrist.setSoftLimit(SoftLimitDirection.kForward, (float)IntakeProfile.kDeployedPos);
 
@@ -138,7 +138,7 @@ public class Intake extends SubsystemBase {
       m_wrist.setIdleMode(IdleMode.kCoast);
     }
     else {
-      setWristOutput(25);
+      setWristOutput(IntakeProfile.kWristDefaultOutput);
     }
   }
 
@@ -148,9 +148,9 @@ public class Intake extends SubsystemBase {
    * @param wristOutputFraction output fraction to bring intake back up
    */
   public void undeployPlus(double wristOutputPercent) {
-    setOuterRollerOutput(0);
     if (intakePlusUndeployed() == true) {
       setWristOutput(0);
+      m_wrist.setIdleMode(IdleMode.kBrake);
     }
     else {
       setWristOutput(-wristOutputPercent);
@@ -164,9 +164,10 @@ public class Intake extends SubsystemBase {
    * @param s_Arm calls arm subsytem to zero converyor output
    */
   public void resetIntake(Arm s_Arm, double wristPercentOutput) {
-    undeployPlus(wristPercentOutput);
     setInnerRollerOutput(0);
+    setOuterRollerOutput(0);
     s_Arm.setIndexorOuput(0);
+    undeployPlus(wristPercentOutput);
     }
 
   /**

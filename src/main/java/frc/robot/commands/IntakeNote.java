@@ -30,12 +30,12 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    s_Intake.intakePlusPlus(s_Arm);
     if (s_Intake.noteDetected() == true) {
       s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
       s_Lighting.setTeleOpLightShow();
     }
     else {
-      s_Intake.intakePlusPlus(s_Arm);
       s_Lighting.setOrangeLightShow();
     }
   }
@@ -43,8 +43,13 @@ public class IntakeNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //new StowNote(s_Arm, s_Intake, s_Lighting);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
     s_Lighting.setTeleOpLightShow();
+    //new StowNote(s_Arm, s_Intake, s_Lighting);
+    // if (s_Intake.noteDetected() == true) {
+    //   new StowNote(s_Arm, s_Intake, s_Lighting);
+    // }
   }
 
   // Returns true when the command should end.
