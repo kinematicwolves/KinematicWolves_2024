@@ -39,7 +39,7 @@ public final class Constants {
     public static final int irSensorPort = 9; //TODO: Must be configured
 
     /* Current Limiting */
-    public static final int kPivotCurrentLimit = 40;
+    public static final int kPivotCurrentLimit = 20;
 
     /* Soft Limits */
     public static final double kPivotSoftLimitRvs = 0.0;
@@ -82,8 +82,8 @@ public final class Constants {
     public static final double wristPosOffset = -0.121;
     public static final double wristPosInversion = 1; // Or -1. Down Positive
     public static final double kWristThreshhold = 0.02;
-    public static final double kInitialPos = 0 + kWristThreshhold;
-    public static final double kDeployedPos = 0.241 - kWristThreshhold;
+    public static final double kInitialPos = 0.001 + kWristThreshhold;
+    public static final double kDeployedPos = 0.24 - kWristThreshhold;
     public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */
@@ -99,7 +99,7 @@ public final class Constants {
     /* Default Percent Outputs */
     public static final double kOuterDefaultOutput = 90;
     public static final double kInnerDefaultOutput = 100;
-    public static final double kWristDefaultOutput = 19;
+    public static final double kWristDefaultOutput = 21;
     public static final double kWristSlowOutput = 11;
   }
 
@@ -189,15 +189,15 @@ public final class Constants {
         public static final double angleCurrentThresholdTime = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveCurrentLimit = 40;
-        public static final int driveCurrentThreshold = 60;
+        public static final int driveCurrentLimit = 30;
+        public static final int driveCurrentThreshold = 50;
         public static final double driveCurrentThresholdTime = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        public static final double openLoopRamp = 4.5;
-        public static final double closedLoopRamp = 0.05;
+        public static final double openLoopRamp = 2.0;
+        public static final double closedLoopRamp = 0.1;
 
         /* Angle Motor PID Values */
         public static final double angleKP = chosenModule.angleKP;
@@ -217,11 +217,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 1.8;// // 4.99m/s before weight
+        public static final double maxSpeed = 0.0023;// // 4.99m/s before weight
         /** Radians per Second */
-        public static final double maxAngularVelocity = 1.8; // 13.99r/s before weight
+        public static final double maxAngularVelocity = 0.0027; // 13.99r/s before weight
         /** Fractional Percentage **/
-        public static final double speedCap = 0.38; // Must be configured
+        public static final double speedCap = 0.35; // Must be configured
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -297,8 +297,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4;
+        public static final double kMaxSpeedMetersPerSecond = 5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 5;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     

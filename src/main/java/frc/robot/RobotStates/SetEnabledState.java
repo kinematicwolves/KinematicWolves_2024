@@ -17,13 +17,13 @@ public class SetEnabledState extends Command {
   public SetEnabledState(Lighting lighting) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Lighting = lighting;
-    matchTimer = 120000;
+    matchTimer = 135000;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    matchTimer = 120000;
+    matchTimer = 135000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -29,12 +29,12 @@ public class ShootNote extends Command {
   @Override
   public void initialize() {
     //s_Swerve.rotateDrivetrainToTarget(s_Vision);
-    s_Arm.prepareToShoot(s_Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    s_Arm.prepareToShoot(s_Intake);
     if (s_Intake.intakePlusDeployed() == true) {
     s_Arm.launchNoteAtSetPos(ArmProfile.kpivotSpeakerPos, 30, 15);
     }

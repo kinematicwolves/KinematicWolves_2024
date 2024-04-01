@@ -63,9 +63,12 @@ public class Arm extends SubsystemBase {
     m_shooterA.setInverted(false);
     m_shooterB.setInverted(false);
 
-    /** Arm Current Limits */
+    /** Current Limits */
     m_pivotA.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
     m_pivotB.setSmartCurrentLimit(ArmProfile.kPivotCurrentLimit);
+    m_shooterA.configPeakCurrentLimit(30);
+    m_shooterB.configPeakCurrentLimit(30);
+    m_indexor.configPeakCurrentLimit(20);
 
     /** Arm Software Limits */
     m_pivotA.enableSoftLimit(SoftLimitDirection.kReverse, true);

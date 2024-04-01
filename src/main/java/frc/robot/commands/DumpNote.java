@@ -23,22 +23,21 @@ public class DumpNote extends Command {
 
 // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    s_Arm.prepareToDump(s_Intake);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    s_Arm.prepareToDump(s_Intake);
     if (s_Intake.intakePlusDeployed() == true) {
-      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 48, 15);
+      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 50, 15);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArmPivot(32);
+    s_Arm.resetArmPivot(38);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristSlowOutput);
   }
 
