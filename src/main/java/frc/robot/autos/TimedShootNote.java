@@ -20,9 +20,10 @@ public class TimedShootNote extends Command {
   private double upwardOutput;
   private double downwardOutput;
   private double seconds;
+  private double wristResetSpeed;
   private int timer;
 
-  public TimedShootNote(Intake intake, Arm arm, Lighting lighting, double pivotAngle, double upwardOutput, double downwardOutput, double seconds) {
+  public TimedShootNote(Intake intake, Arm arm, Lighting lighting, double pivotAngle, double upwardOutput, double downwardOutput, double wristResetSpeed, double seconds) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
@@ -30,6 +31,7 @@ public class TimedShootNote extends Command {
     this.pivotAngle = pivotAngle;
     this.upwardOutput = upwardOutput;
     this.downwardOutput = downwardOutput;
+    this.wristResetSpeed = wristResetSpeed;
     this.seconds = seconds;
     timer = 0;
   }
@@ -38,13 +40,13 @@ public class TimedShootNote extends Command {
   @Override
   public void initialize() {
     timer = 0;
-    s_Arm.prepareToShoot(s_Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     timer += 20;
+    s_Arm.prepareToShoot(s_Intake);
     if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.launchNoteAtSetPos(pivotAngle, upwardOutput, downwardOutput);
       }
@@ -53,8 +55,8 @@ public class TimedShootNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_Arm.resetArmPivot(15);
-    s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
+    s_Arm.resetArmPivot(25);
+    s_Intake.resetIntake(s_Arm, wristResetSpeed);
   }
 
   // Returns true when the command should end.

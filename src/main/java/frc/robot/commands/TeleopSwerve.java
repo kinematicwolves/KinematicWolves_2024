@@ -40,8 +40,8 @@ public class TeleopSwerve extends Command {
         /* Slow Speed Drive */
         if (turboModeSup.getAsBoolean() == true) {
             s_Swerve.drive(
-                new Translation2d(translationVal, strafeVal).times(SwerveProfile.maxSpeed), 
-                (rotationVal) * SwerveProfile.maxAngularVelocity,
+                new Translation2d(translationVal, strafeVal).times(1.9), 
+                (rotationVal) * 3.5,
                 !robotCentricSup.getAsBoolean(),
                 true
             );
@@ -49,8 +49,8 @@ public class TeleopSwerve extends Command {
         /* Normal Speed Drive */
         else {
             s_Swerve.drive(
-                new Translation2d(translationVal * SwerveProfile.speedCap, strafeVal * SwerveProfile.speedCap).times(SwerveProfile.maxSpeed), 
-                (rotationVal * SwerveProfile.speedCap) * SwerveProfile.maxAngularVelocity, 
+                new Translation2d(translationVal * SwerveProfile.speedCap, strafeVal * SwerveProfile.speedCap).times(1.9), 
+                (rotationVal * SwerveProfile.speedCap) * 3.5, 
                 !robotCentricSup.getAsBoolean(), 
                 true
                 );

@@ -5,22 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.Swerve;
 
-public class IntakeNote extends Command {
+public class ShootTrap extends Command {
   private Intake s_Intake;
   private Arm s_Arm;
-  private Lighting s_Lighting;
 
-  /** Creates a new IntakeControl. */
-  public IntakeNote(Intake intake, Arm arm, Lighting lighting) {
+  /** Creates a new ShootNote. */
+  public ShootTrap(Swerve swerve, Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
     s_Arm = arm;
-    s_Lighting = lighting;
   }
 
   // Called when the command is initially scheduled.
@@ -30,22 +29,18 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.intakePlusPlus(s_Arm);
-    if (s_Intake.noteDetected() == true) {
-      s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-      s_Lighting.setTeleOpLightShow();
-    }
-    else {
-      s_Lighting.setOrangeLightShow();
+    s_Intake.deployPlus();
+    s_Arm.setShooterOutput(50);
+    if (s_Intake.intakePlusDeployed() == true) {
+    s_Arm.launchNoteAtSetPos(ArmProfile.kpivotTrapPos, 28, 15);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //new StowNote(s_Arm, s_Intake, s_Lighting);
+    s_Arm.resetArmPivot(15);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-    s_Lighting.setTeleOpLightShow();
   }
 
   // Returns true when the command should end.

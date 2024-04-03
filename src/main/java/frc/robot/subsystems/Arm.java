@@ -45,7 +45,7 @@ public class Arm extends SubsystemBase {
   /** Indexor Sensor */
   private DigitalInput beamBreakSensor = new DigitalInput(ArmProfile.irSensorPort);
 
-  private Debouncer m_Debouncer = new Debouncer(0.1, DebounceType.kRising);
+  private Debouncer m_Debouncer = new Debouncer(0.02, DebounceType.kRising);
 
   /** Initaliaztion Box */
   public Arm() {

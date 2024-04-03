@@ -18,21 +18,24 @@ import frc.robot.Constants.ControllerProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
-import frc.robot.autos.AutoIntakeNote;
+import frc.robot.autos.AmpAuto;
+import frc.robot.autos.AutoIntakePlus;
 import frc.robot.autos.BackUp;
 import frc.robot.autos.OneNoteLeft;
 import frc.robot.autos.OneNoteRight;
 // import frc.robot.TechnitionCommands.ArmControl;
 // import frc.robot.TechnitionCommands.WristControl;
-import frc.robot.autos.ThreeNoteLeft;
-import frc.robot.autos.ThreeNoteRight;
-import frc.robot.autos.TwoNoteLeft;
+import frc.robot.autos.FourNote;
+import frc.robot.autos.BlueMidField;
+import frc.robot.autos.BlueOneNoteRight;
 import frc.robot.autos.TwoNoteRight;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
+import frc.robot.commands.IntakeFromSource;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.PreClimbState;
 import frc.robot.commands.ShootNote;
+import frc.robot.commands.ShootTrap;
 import frc.robot.commands.StowNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
@@ -51,7 +54,7 @@ public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(ControllerProfile.kDriverControllerPort);
     private final Joystick munipulator = new Joystick(ControllerProfile.kManipulatorControllerPort);
-    private final Joystick technition = new Joystick(ControllerProfile.kTechnitionControllerPort);
+    // private final Joystick technition = new Joystick(ControllerProfile.kTechnitionControllerPort);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -104,12 +107,13 @@ public class RobotContainer {
 
         /* Chooser for Auton Commands */
         m_AutoChooser.setDefaultOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("3 Note Left", new ThreeNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("3 Note Right", new ThreeNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("2 Note Left", new TwoNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("2 Note Right", new TwoNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("1 Note Red", new OneNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("1 Note Blue", new OneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Blue 1 Note Mid-Field", new BlueMidField(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Blue 1 Note Taxi", new BlueOneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        // m_AutoChooser.addOption("2 Note Right", new TwoNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        // m_AutoChooser.addOption("1 Note Red", new OneNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        // m_AutoChooser.addOption("1 Note Blue", new OneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        // m_AutoChooser.addOption("Shoot And Amp", new AmpAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
     }
 
@@ -128,16 +132,14 @@ public class RobotContainer {
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
         .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kA.value)
-        .onFalse(new StowNote(s_Arm, s_Intake, s_Lighting)); // A = Intake 
-        // new JoystickButton(munipulator, XboxController.Button.kA.value)
-        // .whileTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
-        new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Intake No plus
-        .onTrue(new StowNote(s_Arm, s_Intake, s_Lighting));
-        // .onTrue(new InstantCommand(() -> s_Intake.smartIntakeWithoutPlusPlus(s_Arm, s_Intake, s_Lighting)))
-        // .onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput)));
+        .onFalse(new StowNote(s_Arm, s_Intake)); // A = Intake 
+        new JoystickButton(munipulator, XboxController.Button.kLeftBumper.value) // LB = Shoot Trap
+        .whileTrue(new ShootTrap(s_Swerve, s_Intake, s_Arm));
+        new JoystickButton(munipulator, XboxController.Button.kRightBumper.value) // RB = Source Intake
+        .whileTrue(new IntakeFromSource(s_Arm, s_Intake));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker
         .whileTrue(new ShootNote(s_Swerve, s_Intake, s_Arm, s_Lighting));
-        new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Shoot In Amp
+        new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Dump In Amp
         .whileTrue(new DumpNote(s_Intake, s_Arm));
         new JoystickButton(munipulator, XboxController.Button.kBack.value) // Back = Climbers to First State
         .whileTrue(new PreClimbState(s_Intake, s_Arm, s_Climber)); 
@@ -151,24 +153,22 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> s_Climber.setClimberBOutput(0)));
 
         /* Technition Buttons */
-        new JoystickButton(technition, XboxController.Button.kA.value) // X = Inner Roller
-        .onTrue(new InstantCommand(() -> s_Intake.setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput)))
-        .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput)))
-        .onFalse(new InstantCommand(() -> s_Intake.setInnerRollerOutput(0)))
-        .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
-        new JoystickButton(technition, XboxController.Button.kB.value) // B = Outer Roller
-        .onTrue(new InstantCommand(() -> s_Intake.setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput)))
-        .onFalse(new InstantCommand(() -> s_Intake.setOuterRollerOutput(0)));
-        new JoystickButton(technition, XboxController.Button.kLeftBumper.value) // LB = Indexor
-        .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput)))
-        .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
-        new JoystickButton(technition, XboxController.Button.kRightBumper.value) // RB = Shooter
-        .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterAmpOutput)))
-        .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
-        new JoystickButton(technition, XboxController.Button.kY.value) // Y = Climbers
-        .onTrue(new AutoIntakeNote(s_Intake, s_Arm, s_Lighting));
-        //.onTrue(new InstantCommand(() -> s_Intake.enableIntake(s_Arm, s_Lighting)))
-        //.onFalse(new InstantCommand(() -> s_Intake.resetIntake(s_Arm, s_Lighting)));
+        // new JoystickButton(technition, XboxController.Button.kA.value) // X = Inner Roller
+        // .onTrue(new InstantCommand(() -> s_Intake.setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput)))
+        // .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput)))
+        // .onFalse(new InstantCommand(() -> s_Intake.setInnerRollerOutput(0)))
+        // .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
+        // new JoystickButton(technition, XboxController.Button.kB.value) // B = Outer Roller
+        // .onTrue(new InstantCommand(() -> s_Intake.setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput)))
+        // .onFalse(new InstantCommand(() -> s_Intake.setOuterRollerOutput(0)));
+        // new JoystickButton(technition, XboxController.Button.kLeftBumper.value) // LB = Indexor
+        // .onTrue(new InstantCommand(() -> s_Arm.setIndexorOuput(ArmProfile.kIndexorDefaultOutput)))
+        // .onFalse(new InstantCommand(() -> s_Arm.setIndexorOuput(0)));
+        // new JoystickButton(technition, XboxController.Button.kRightBumper.value) // RB = Shooter
+        // .onTrue(new InstantCommand(() -> s_Arm.setShooterOutput(ArmProfile.kShooterAmpOutput)))
+        // .onFalse(new InstantCommand(() -> s_Arm.setShooterOutput(0)));
+        // new JoystickButton(technition, XboxController.Button.kY.value) // Y = Climbers
+        // .onTrue(new AutoIntakeNote(s_Intake, s_Arm, s_Lighting));
     }
 
     /**

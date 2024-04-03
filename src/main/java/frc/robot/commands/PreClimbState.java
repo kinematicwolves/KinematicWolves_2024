@@ -25,13 +25,12 @@ public class PreClimbState extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    s_Intake.deployPlus();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    s_Intake.deployPlus();
     s_Climber.setClimberToClimbPos();
     if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 38, 15);

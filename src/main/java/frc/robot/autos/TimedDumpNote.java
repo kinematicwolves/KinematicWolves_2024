@@ -33,13 +33,13 @@ public class TimedDumpNote extends Command {
   @Override
   public void initialize() {
     timer = 0;
-    s_Arm.prepareToDump(s_Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     timer += 20;
+    s_Arm.prepareToDump(s_Intake);
     if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 48, 15);
     }

@@ -13,13 +13,11 @@ import frc.robot.subsystems.Lighting;
 public class StowNote extends Command {
   private Arm s_Arm;
   private Intake s_Intake;
-  private Lighting s_Lighting;
   
   /** Creates a new StowNote. */
-  public StowNote(Arm arm, Intake intake, Lighting lighting) {
+  public StowNote(Arm arm, Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     s_Intake = intake;
-    s_Lighting = lighting;
     s_Arm = arm;
     //addRequirements(s_Intake);
   }
@@ -37,25 +35,15 @@ public class StowNote extends Command {
   @Override
   public void execute() {
     if (s_Intake.noteDetected() == true) {
-      //s_Lighting.setRedLightShow();
-      s_Arm.setIndexorOuput(65);
-      //System.out.println("run motors");
+      s_Arm.setIndexorOuput(100);
       s_Intake.setInnerRollerOutput(100);
     }
-    // else if (s_Arm.noteStowed() == true) {
-    //   s_Lighting.setRedLightShow();
-    //   s_Arm.setIndexorOuput(0);
-    //   System.out.println("note is in");
-    //   s_Intake.setInnerRollerOutput(0);
-    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //System.out.println("end of stow command");
     s_Arm.setIndexorOuput(0);
-    s_Lighting.setTeleOpLightShow();
     s_Intake.setInnerRollerOutput(0);
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
   }
@@ -63,7 +51,6 @@ public class StowNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //System.out.println("End of stow command");
     return s_Arm.noteStowed() == true;
   }
 }

@@ -26,7 +26,7 @@ public final class Constants {
     public static final int kTechnitionControllerPort = 2;
 
     /* Joystick Deadband */
-    public static final double stickDeadband = 0.15;
+    public static final double stickDeadband = 0.18;
   }
 
   public static class ArmProfile {
@@ -46,9 +46,11 @@ public final class Constants {
     public static final double kPivotSoftLiimitFwd = 54000;
 
     /* Arm Threshold and Setpoints */
-    public static final double kPivotPosThreshold = 550;
+    public static final double kPivotPosThreshold = 500;
     public static final double pivotInitialPos = 0;
     public static final double kpivotSpeakerPos = 13000;
+    public static final double kpivotTrapPos = 8000;
+    public static final double kpivotSourcePos = 17000;
     public static final double kpivotAmpPos = 53500; //54700;
 
     /* Conversion Factors */
@@ -61,6 +63,7 @@ public final class Constants {
     /* Set Outputs */
     public static final double kIndexorDefaultOutput = 100;
     public static final double kShooterDefaultOutput = 90;
+    public static final double kTrapOutout = 50;
     public static final double kShooterAmpOutput = 40;
 
     /* Arm PID Gains */
@@ -205,10 +208,10 @@ public final class Constants {
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 1.0;
-        public static final double driveKI = 0.0;
-        public static final double driveKD = 0.1;
-        public static final double driveKF = 0.0;
+        public static final double driveKP = 0.8;
+        public static final double driveKI = 0.05;
+        public static final double driveKD = 0.12;
+        public static final double driveKF = 0.1;
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0; //TODO: This must be configured
@@ -217,11 +220,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 0.0023;// // 4.99m/s before weight
+        public static final double maxSpeed = 3;//0.0023;// // 4.99m/s before weight
         /** Radians per Second */
-        public static final double maxAngularVelocity = 0.0027; // 13.99r/s before weight
+        public static final double maxAngularVelocity = 3.5;//0.0027; // 13.99r/s before weight
         /** Fractional Percentage **/
-        public static final double speedCap = 0.35; // Must be configured
+        public static final double speedCap = 0.38; // Must be configured
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

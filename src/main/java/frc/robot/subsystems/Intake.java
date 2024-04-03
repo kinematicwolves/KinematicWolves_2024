@@ -138,7 +138,7 @@ public class Intake extends SubsystemBase {
       m_wrist.setIdleMode(IdleMode.kCoast);
     }
     else {
-      setWristOutput(IntakeProfile.kWristDefaultOutput);
+      setWristOutput(23);
     }
   }
 
@@ -180,7 +180,7 @@ public class Intake extends SubsystemBase {
     if (intakePlusDeployed() == true) {
       setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
-      s_Arm.setIndexorOuput(50);
+      s_Arm.setIndexorOuput(100);
     }
   }
 
