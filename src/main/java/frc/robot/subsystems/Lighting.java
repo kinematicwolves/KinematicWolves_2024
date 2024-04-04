@@ -55,6 +55,10 @@ public class Lighting extends SubsystemBase {
     animation = new TwinkleAnimation(225, 0, 0, 5, 1, LightingProfile.numLEDStrip, TwinklePercent.Percent100);
   }
 
+  public void setPurpleLightShow() {
+    animation = new TwinkleAnimation(160, 32, 240, 5, 1, LightingProfile.numLEDStrip, TwinklePercent.Percent100);
+  }
+
   @Override
   public void periodic() {
     //This method will be called once per scheduler run

@@ -82,11 +82,11 @@ public final class Constants {
     public static final int kInnerRollerCurrentLimit = 25;
 
     /* Wrist Threshold and Setpoints */ //TODO: Must be configured for new through bore sensor
-    public static final double wristPosOffset = -0.121;
-    public static final double wristPosInversion = 1; // Or -1. Down Positive
+    public static final double wristPosOffset = -0.978;
+    public static final double wristPosInversion = -1; // Or -1. Down Positive
     public static final double kWristThreshhold = 0.02;
-    public static final double kInitialPos = 0.001 + kWristThreshhold;
-    public static final double kDeployedPos = 0.24 - kWristThreshhold;
+    public static final double kInitialPos = 0.02 + kWristThreshhold;
+    public static final double kDeployedPos = 0.77 - kWristThreshhold;
     public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */
@@ -235,7 +235,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(135.17);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(139.92);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

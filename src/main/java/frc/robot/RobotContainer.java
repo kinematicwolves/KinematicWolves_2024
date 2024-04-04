@@ -31,6 +31,7 @@ import frc.robot.autos.BlueOneNoteRight;
 import frc.robot.autos.TwoNoteRight;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
+import frc.robot.commands.InnerIntakeNote;
 import frc.robot.commands.IntakeFromSource;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.PreClimbState;
@@ -108,8 +109,8 @@ public class RobotContainer {
         /* Chooser for Auton Commands */
         m_AutoChooser.setDefaultOption("BackUp", new BackUp(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("Blue 1 Note Mid-Field", new BlueMidField(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("Blue 1 Note Taxi", new BlueOneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Blue Right", new BlueMidField(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Blue Left", new BlueOneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
         // m_AutoChooser.addOption("2 Note Right", new TwoNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
         // m_AutoChooser.addOption("1 Note Red", new OneNoteLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
         // m_AutoChooser.addOption("1 Note Blue", new OneNoteRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
@@ -130,9 +131,11 @@ public class RobotContainer {
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
-        new JoystickButton(munipulator, XboxController.Button.kA.value)
-        .onFalse(new StowNote(s_Arm, s_Intake)); // A = Intake 
+        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting))
+        .onFalse(new StowNote(s_Arm, s_Intake));
+        new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Backup Intake
+        .whileTrue(new InnerIntakeNote(s_Intake, s_Arm, s_Lighting))
+        .onFalse(new StowNote(s_Arm, s_Intake));
         new JoystickButton(munipulator, XboxController.Button.kLeftBumper.value) // LB = Shoot Trap
         .whileTrue(new ShootTrap(s_Swerve, s_Intake, s_Arm));
         new JoystickButton(munipulator, XboxController.Button.kRightBumper.value) // RB = Source Intake

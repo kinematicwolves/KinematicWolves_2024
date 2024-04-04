@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     fxConfigs = new FXConfigs();
-    CameraServer.startAutomaticCapture();
     // mjpegServer1.setSource(usbCam);
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
