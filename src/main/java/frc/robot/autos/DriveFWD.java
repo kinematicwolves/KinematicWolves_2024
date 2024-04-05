@@ -20,8 +20,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class BackUp extends SequentialCommandGroup {
-    public BackUp(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class DriveFWD extends SequentialCommandGroup {
+    public DriveFWD(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
