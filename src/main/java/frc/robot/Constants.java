@@ -48,7 +48,7 @@ public final class Constants {
     /* Arm Threshold and Setpoints */
     public static final double kPivotPosThreshold = 500;
     public static final double pivotInitialPos = 0;
-    public static final double kpivotSpeakerPos = 13000;
+    public static final double kpivotSpeakerPos = 13050;
     public static final double kpivotTrapPos = 8000;
     public static final double kpivotSourcePos = 17000;
     public static final double kpivotAmpPos = 53500; //54700;
@@ -81,12 +81,12 @@ public final class Constants {
     public static final int kOuterRollerCurrentLimit = 25;
     public static final int kInnerRollerCurrentLimit = 25;
 
-    /* Wrist Threshold and Setpoints */ //TODO: Must be configured for new through bore sensor
-    public static final double wristPosOffset = -0.978;
+    /* Wrist Threshold and Setpoints */
+    public static final double wristPosOffset = -0.949;
     public static final double wristPosInversion = -1; // Or -1. Down Positive
-    public static final double kWristThreshhold = 0.02;
-    public static final double kInitialPos = 0.02 + kWristThreshhold;
-    public static final double kDeployedPos = 0.77 - kWristThreshhold;
+    public static final double kWristThreshhold = 0.01;
+    public static final double kInitialPos = 0.0 + kWristThreshhold;
+    public static final double kDeployedPos = 0.746 - kWristThreshhold;
     public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */
@@ -224,7 +224,7 @@ public final class Constants {
         /** Radians per Second */
         public static final double maxAngularVelocity = 3.5;//0.0027; // 13.99r/s before weight
         /** Fractional Percentage **/
-        public static final double speedCap = 0.38; // Must be configured
+        public static final double speedCap = 0.4; // Must be configured
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;

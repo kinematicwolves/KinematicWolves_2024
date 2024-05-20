@@ -74,7 +74,7 @@ public class RedRight extends SequentialCommandGroup {
                     s_Swerve);
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 12800, 25, 14, IntakeProfile.kWristDefaultOutput, 1.8),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 13000, 25, 14, IntakeProfile.kWristDefaultOutput, 1.8),
             new InstantCommand(() -> s_Swerve.setPose(lineUp.getInitialPose())),
             swerveControllerCommand,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, false, true)),
