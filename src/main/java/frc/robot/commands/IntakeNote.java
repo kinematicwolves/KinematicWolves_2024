@@ -31,21 +31,21 @@ public class IntakeNote extends Command {
   @Override
   public void execute() {
     s_Intake.intakePlusPlus(s_Arm);
-    if (s_Intake.noteDetected() == true) {
-      s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-      s_Lighting.setPurpleLightShow();
-    }
-    else {
-      s_Lighting.setOrangeLightShow();
-    }
+    // if (s_Intake.noteDetected() == true) {
+    //   s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
+    //   s_Lighting.setPurpleLightShow();
+    // }
+    // else {
+    //   s_Lighting.setOrangeLightShow();
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //new StowNote(s_Arm, s_Intake, s_Lighting);
-    s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-    s_Lighting.setTeleOpLightShow();
+    s_Intake.resetIntake(s_Arm, 30);
+    // s_Lighting.setTeleOpLightShow();
   }
 
   // Returns true when the command should end.

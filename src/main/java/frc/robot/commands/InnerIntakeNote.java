@@ -32,19 +32,19 @@ public class InnerIntakeNote extends Command {
   public void execute() {
     s_Intake.setInnerRollerOutput(100);
     s_Arm.setIndexorOuput(100);
-    s_Lighting.setOrangeLightShow();
-    if (s_Intake.noteDetected() == true) {
-      s_Lighting.setPurpleLightShow();
-      s_Intake.setInnerRollerOutput(0);
-      s_Arm.setIndexorOuput(0);
-    }
+    // s_Lighting.setOrangeLightShow();
+    // if (s_Intake.noteDetected() == true) {
+    //   s_Lighting.setPurpleLightShow();
+    //   s_Intake.setInnerRollerOutput(0);
+    //   s_Arm.setIndexorOuput(0);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-    s_Lighting.setTeleOpLightShow();
+    // s_Lighting.setTeleOpLightShow();
   }
 
   // Returns true when the command should end.

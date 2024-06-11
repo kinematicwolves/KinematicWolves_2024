@@ -124,15 +124,15 @@ public class RobotContainer {
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting))
-        .onFalse(new StowNote(s_Arm, s_Intake));
+        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
+        // .onFalse(new StowNote(s_Arm, s_Intake));
         new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Backup Intake
-        .whileTrue(new InnerIntakeNote(s_Intake, s_Arm, s_Lighting))
-        .onFalse(new StowNote(s_Arm, s_Intake));
-        new JoystickButton(munipulator, XboxController.Button.kLeftBumper.value) // LB = Shoot Trap
-        .whileTrue(new ShootTrap(s_Swerve, s_Intake, s_Arm));
-        new JoystickButton(munipulator, XboxController.Button.kRightBumper.value) // RB = Source Intake
-        .whileTrue(new IntakeFromSource(s_Arm, s_Intake));
+        .whileTrue(new InnerIntakeNote(s_Intake, s_Arm, s_Lighting));
+        // .onFalse(new StowNote(s_Arm, s_Intake));
+        // new JoystickButton(munipulator, XboxController.Button.kLeftBumper.value) // LB = Shoot Trap
+        // .whileTrue(new ShootTrap(s_Swerve, s_Intake, s_Arm));
+        // new JoystickButton(munipulator, XboxController.Button.kRightBumper.value) // RB = Source Intake
+        // .whileTrue(new IntakeFromSource(s_Arm, s_Intake));
         new JoystickButton(munipulator, XboxController.Button.kY.value) // Y = Shoot At Speaker
         .whileTrue(new ShootNote(s_Swerve, s_Intake, s_Arm, s_Lighting));
         new JoystickButton(munipulator, XboxController.Button.kX.value) // X = Dump In Amp

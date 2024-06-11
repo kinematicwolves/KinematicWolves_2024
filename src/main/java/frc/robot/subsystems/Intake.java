@@ -138,7 +138,7 @@ public class Intake extends SubsystemBase {
       m_wrist.setIdleMode(IdleMode.kCoast);
     }
     else {
-      setWristOutput(23);
+      setWristOutput(25);
     }
   }
 
