@@ -48,7 +48,7 @@ public final class Constants {
     /* Arm Threshold and Setpoints */
     public static final double kPivotPosThreshold = 500;
     public static final double pivotInitialPos = 0;
-    public static final double kpivotSpeakerPos = 13000;
+    public static final double kpivotSpeakerPos = 12800;
     public static final double kpivotTrapPos = 8000;
     public static final double kpivotSourcePos = 17000;
     public static final double kpivotAmpPos = 53500; //54700;
@@ -82,11 +82,11 @@ public final class Constants {
     public static final int kInnerRollerCurrentLimit = 25;
 
     /* Wrist Threshold and Setpoints */
-    public static final double wristPosOffset = -0.949;
+    public static final double wristPosOffset = -0.951;
     public static final double wristPosInversion = -1; // Or -1. Down Positive
     public static final double kWristThreshhold = 0.01;
     public static final double kInitialPos = 0.0 + kWristThreshhold;
-    public static final double kDeployedPos = 0.828 - kWristThreshhold;
+    public static final double kDeployedPos = 0.75 - kWristThreshhold;
     public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */
@@ -103,7 +103,7 @@ public final class Constants {
     public static final double kOuterDefaultOutput = 90;
     public static final double kInnerDefaultOutput = 100;
     public static final double kWristDefaultOutput = 25;
-    public static final double kWristSlowOutput = 11;
+    public static final double kWristSlowOutput = 12.5;
   }
 
   public static class ClimberProfile {

@@ -30,7 +30,7 @@ public class DumpNote extends Command {
   public void execute() {
     s_Arm.prepareToDump(s_Intake);
     if (s_Intake.intakePlusDeployed() == true) {
-      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 50, 15);
+      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 47, 15);
     }
   }
 

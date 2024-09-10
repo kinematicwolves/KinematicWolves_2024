@@ -33,7 +33,7 @@ public class DriveFWD extends SequentialCommandGroup {
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(1.5, 0)),
+              List.of(new Translation2d(7, 0)), //<- change x, y to go to a different posiiton
               new Pose2d(3, 0, new Rotation2d(0.04)),
                 config);
 

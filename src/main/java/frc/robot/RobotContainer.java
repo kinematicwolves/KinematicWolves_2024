@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ClimberProfile;
 import frc.robot.Constants.ControllerProfile;
+import frc.robot.Constants.IntakeProfile;
 import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
 import frc.robot.autos.BlueLeft;
@@ -24,6 +25,7 @@ import frc.robot.autos.DriveFWD;
 import frc.robot.autos.FourNote;
 import frc.robot.autos.RedLeft;
 import frc.robot.autos.RedRight;
+import frc.robot.autos.TimedShootNote;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
 import frc.robot.commands.InnerIntakeNote;
@@ -102,7 +104,10 @@ public class RobotContainer {
         //     () -> -technition.getRawAxis(armAxis)));
 
         /* Chooser for Auton Commands */
-        m_AutoChooser.setDefaultOption("Back Out", new DriveFWD(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.setDefaultOption("Back Out", 
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 13000, 25, 14, IntakeProfile.kWristDefaultOutput, 1.8)
+            .andThen(new DriveFWD(s_Swerve, s_Arm, s_Intake, s_Lighting))
+        );
         m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("Blue Right", new BlueRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("Blue Left", new BlueLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));

@@ -148,6 +148,7 @@ public class Intake extends SubsystemBase {
    * @param wristOutputFraction output fraction to bring intake back up
    */
   public void undeployPlus(double wristOutputPercent) {
+    System.out.println("Test");
     if (intakePlusUndeployed() == true) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kBrake);
