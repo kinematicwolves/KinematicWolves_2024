@@ -29,9 +29,9 @@ public class DumpNote extends Command {
   @Override
   public void execute() {
     s_Arm.prepareToDump(s_Intake);
-    if (s_Intake.intakePlusDeployed() == true) {
-      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 47, 15);
-    }
+    //if (s_Intake.intakePlusDeployed() == true) {
+      s_Arm.launchNoteAtSetPos(ArmProfile.kpivotAmpPos, 50, 15);
+    //}
   }
 
   // Called once the command ends or is interrupted.

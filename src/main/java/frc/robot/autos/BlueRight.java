@@ -17,6 +17,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.Constants.SwerveProfile;
+import frc.robot.autos.AutoCommands.AutoIntake;
+import frc.robot.autos.AutoCommands.TimedShootNote;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;

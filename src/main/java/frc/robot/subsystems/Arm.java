@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -44,9 +45,7 @@ public class Arm extends SubsystemBase {
   private SparkPIDController pivotControllerB = m_pivotB.getPIDController();
 
   /** Indexor Sensor */
-  private TimeOfFlight s_IndexerorSensor = new TimeOfFlight(49);
-
-  private Debouncer m_Debouncer = new Debouncer(0.02, DebounceType.kRising);
+  private TimeOfFlight s_IndexerSensor = new TimeOfFlight(49);
 
   /** Initaliaztion Box */
   public Arm() {
@@ -221,13 +220,13 @@ public class Arm extends SubsystemBase {
    * @return true if the note breaks beam sensor, otherwise false
    */
   public boolean noteStowed() {
-     if (s_IndexerorSensor.getRange() <= 50) {
+    if (s_IndexerSensor.getRange() <= 50) {
       return true;
-     }
-     else {
+    }
+    else {
       return false;
-     }
-  } 
+    }
+  }
 
   /**
    * Inner intake and conveyor run until note is in the middle of the indexor

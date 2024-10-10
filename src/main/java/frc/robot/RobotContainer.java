@@ -19,10 +19,12 @@ import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
 import frc.robot.autos.BlueLeft;
 import frc.robot.autos.BlueRight;
+import frc.robot.autos.CenterLeftAuto;
+import frc.robot.autos.CenterRightAuto;
 import frc.robot.autos.DriveFWD;
 // import frc.robot.TechnitionCommands.ArmControl;
 // import frc.robot.TechnitionCommands.WristControl;
-import frc.robot.autos.FourNote;
+import frc.robot.autos.TwoNote;
 import frc.robot.autos.RedLeft;
 import frc.robot.autos.RedRight;
 import frc.robot.autos.TimedShootNote;
@@ -104,15 +106,14 @@ public class RobotContainer {
         //     () -> -technition.getRawAxis(armAxis)));
 
         /* Chooser for Auton Commands */
-        m_AutoChooser.setDefaultOption("Back Out", 
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 13000, 25, 14, IntakeProfile.kWristDefaultOutput, 1.8)
-            .andThen(new DriveFWD(s_Swerve, s_Arm, s_Intake, s_Lighting))
-        );
-        m_AutoChooser.addOption("4 Note", new FourNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.setDefaultOption("Back Out", new DriveFWD(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Center Right To Left", new CenterRightAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Center Left To Right", new CenterLeftAuto(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Center Two Note", new TwoNote(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("Blue Right", new BlueRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("Blue Left", new BlueLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
         m_AutoChooser.addOption("Red Right", new RedRight(s_Swerve, s_Arm, s_Intake, s_Lighting));
-        m_AutoChooser.addOption("RedLeft", new RedLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
+        m_AutoChooser.addOption("Red Left", new RedLeft(s_Swerve, s_Arm, s_Intake, s_Lighting));
         SmartDashboard.putData(m_AutoChooser);
     }
 

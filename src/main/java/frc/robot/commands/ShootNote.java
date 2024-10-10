@@ -35,9 +35,9 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     s_Arm.prepareToShoot(s_Intake);
-    if (s_Intake.intakePlusDeployed() == true) {
+    //if (s_Intake.intakePlusDeployed() == true) {
     s_Arm.launchNoteAtSetPos(ArmProfile.kpivotSpeakerPos, 30, 15);
-    }
+    //}
   }
 
   // Called once the command ends or is interrupted.
