@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.autos;
+package frc.robot.autos.AutoCommands;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,9 +47,9 @@ public class TimedShootNote extends Command {
   public void execute() {
     timer += 20;
     s_Arm.prepareToShoot(s_Intake);
-    if (s_Intake.intakePlusDeployed() == true) {
+    //if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.launchNoteAtSetPos(pivotAngle, upwardOutput, downwardOutput);
-      }
+      //}
   }
 
   // Called once the command ends or is interrupted.

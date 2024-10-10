@@ -17,14 +17,17 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmProfile;
 import frc.robot.Constants.IntakeProfile;
 import frc.robot.Constants.SwerveProfile;
+import frc.robot.autos.AutoCommands.AutoIntakePlus;
+import frc.robot.autos.AutoCommands.AutoStowNote;
+import frc.robot.autos.AutoCommands.TimedShootNote;
 import frc.robot.commands.ShootNote;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Swerve;
  
-public class FourNote extends SequentialCommandGroup {
-    public FourNote(Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
+public class CenterLeftAuto extends SequentialCommandGroup {
+    public CenterLeftAuto (Swerve s_Swerve, Arm s_Arm, Intake s_Intake, Lighting s_Lighting){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -36,24 +39,25 @@ public class FourNote extends SequentialCommandGroup {
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(0.5, 1)),
-              new Pose2d(2.4, 2, new Rotation2d(-0.17)),
+              List.of(new Translation2d(0.9, 1.6)),
+              new Pose2d(1.5, 2.55, new Rotation2d(-0.31)),  
+            
                 config);
 
         Trajectory middleNote =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(-1.5, 0)),
-              new Pose2d(-0.8, -2.3, new Rotation2d(0.19)),
+              List.of(new Translation2d(-1, -0.8)),
+              new Pose2d(-0.08, -2.49, new Rotation2d(0.13)),
                 config);
 
         Trajectory rightNote =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
-              List.of(new Translation2d(-0.6, -1)),
-              new Pose2d(0.2, -1.6, new Rotation2d(0.185)),
+              List.of(new Translation2d(-0.4, -0.5)),
+              new Pose2d(-0.08, -2.25, new Rotation2d(0.37)),
                 config);
 
         var thetaController =
@@ -61,18 +65,18 @@ public class FourNote extends SequentialCommandGroup {
                 Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        SwerveControllerCommand swerveControllerCommand =
-            new SwerveControllerCommand(
-                leftNote,
-                s_Swerve::getPose,
-                SwerveProfile.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                s_Swerve::setModuleStates,
-                s_Swerve);
+                SwerveControllerCommand swerveControllerCommand =
+                new SwerveControllerCommand(
+                    leftNote,
+                    s_Swerve::getPose,
+                    SwerveProfile.swerveKinematics,
+                    new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                    new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                    thetaController,
+                    s_Swerve::setModuleStates,
+                    s_Swerve);
 
-                SwerveControllerCommand swerveControllerCommand2 =
+                    SwerveControllerCommand swerveControllerCommand2 =
                 new SwerveControllerCommand(
                     middleNote,
                     s_Swerve::getPose,
@@ -83,7 +87,8 @@ public class FourNote extends SequentialCommandGroup {
                     s_Swerve::setModuleStates,
                     s_Swerve);
 
-                SwerveControllerCommand swerveControllerCommand3 =
+                    
+                    SwerveControllerCommand swerveControllerCommand3 =
                 new SwerveControllerCommand(
                     rightNote,
                     s_Swerve::getPose,
@@ -93,7 +98,6 @@ public class FourNote extends SequentialCommandGroup {
                     thetaController,
                     s_Swerve::setModuleStates,
                     s_Swerve);
-
 
         addCommands(
             new InstantCommand(() -> s_Lighting.setRedLightShow()),
@@ -106,16 +110,13 @@ public class FourNote extends SequentialCommandGroup {
             new InstantCommand(() -> s_Swerve.setPose(middleNote.getInitialPose())),
             swerveControllerCommand2,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, false, true)),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 20900, 30, 15, IntakeProfile.kWristDefaultOutput, 1.9),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 21900, 30, 15, IntakeProfile.kWristDefaultOutput, 1.9),
             new AutoIntakePlus(s_Intake, s_Arm, s_Lighting),
             new AutoStowNote(s_Intake, s_Arm),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 20900, 30, 15, IntakeProfile.kWristDefaultOutput, 1.9),
+            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 21900, 30, 15, IntakeProfile.kWristDefaultOutput, 1.9),
             new InstantCommand(() -> s_Swerve.setPose(rightNote.getInitialPose())),
             swerveControllerCommand3,
             new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 0, false, true)),
-            new AutoIntakePlus(s_Intake, s_Arm, s_Lighting),
-            new AutoStowNote(s_Intake, s_Arm),
-            new TimedShootNote(s_Intake, s_Arm, s_Lighting, 22000, 30, 15, IntakeProfile.kWristDefaultOutput, 1.9),
             new InstantCommand(() -> s_Lighting.setDisabledLightShow())
         );
     }

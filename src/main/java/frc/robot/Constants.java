@@ -48,7 +48,7 @@ public final class Constants {
     /* Arm Threshold and Setpoints */
     public static final double kPivotPosThreshold = 500;
     public static final double pivotInitialPos = 0;
-    public static final double kpivotSpeakerPos = 13050;
+    public static final double kpivotSpeakerPos = 12050;
     public static final double kpivotTrapPos = 8000;
     public static final double kpivotSourcePos = 17000;
     public static final double kpivotAmpPos = 53500; //54700;
@@ -235,7 +235,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(139.92);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(138.5);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
