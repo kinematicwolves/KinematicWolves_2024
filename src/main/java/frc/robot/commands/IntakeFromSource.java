@@ -31,9 +31,9 @@ public class IntakeFromSource extends Command {
     s_Intake.deployPlus();
     s_Arm.setShooterOutput(-100);
     s_Arm.setIndexorOuput(-100);
-    //if (s_Intake.intakePlusDeployed() == true) {
+    if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.launchNoteAtSetPos(ArmProfile.kpivotSourcePos, 28, 15);
-    //}
+    }
   }
 
   // Called once the command ends or is interrupted.

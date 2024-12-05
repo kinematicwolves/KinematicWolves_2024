@@ -83,10 +83,10 @@ public final class Constants {
 
     /* Wrist Threshold and Setpoints */
     public static final double wristPosOffset = -0.951;
-    public static final double wristPosInversion = -1; // Or -1. Down Positive
+    public static final double wristPosInversion = 1; // Or -1. Down Positive
     public static final double kWristThreshhold = 0.01;
-    public static final double kInitialPos = 0.0 + kWristThreshhold;
-    public static final double kDeployedPos = 0.75 - kWristThreshhold;
+    public static final double kInitialPos = -0.497 + kWristThreshhold;
+    public static final double kDeployedPos = -0.251  - kWristThreshhold;
     public static final double noteDetectedDistance = 110; // Distance in millimeters
 
     /* Conversion Factors */

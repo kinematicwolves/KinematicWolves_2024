@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ClimberProfile;
 import frc.robot.Constants.ControllerProfile;
-import frc.robot.Constants.IntakeProfile;
 import frc.robot.RobotStates.SetDisabledState;
 import frc.robot.RobotStates.SetEnabledState;
 import frc.robot.autos.BlueLeft;
@@ -22,20 +21,17 @@ import frc.robot.autos.BlueRight;
 import frc.robot.autos.CenterLeftAuto;
 import frc.robot.autos.CenterRightAuto;
 import frc.robot.autos.DriveFWD;
+import frc.robot.autos.RedLeft;
+import frc.robot.autos.RedRight;
 // import frc.robot.TechnitionCommands.ArmControl;
 // import frc.robot.TechnitionCommands.WristControl;
 import frc.robot.autos.TwoNote;
-import frc.robot.autos.RedLeft;
-import frc.robot.autos.RedRight;
-import frc.robot.autos.TimedShootNote;
 import frc.robot.commands.ClimbChain;
 import frc.robot.commands.DumpNote;
 import frc.robot.commands.InnerIntakeNote;
-import frc.robot.commands.IntakeFromSource;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.PreClimbState;
 import frc.robot.commands.ShootNote;
-import frc.robot.commands.ShootTrap;
 import frc.robot.commands.StowNote;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Arm;
@@ -130,11 +126,11 @@ public class RobotContainer {
 
         /* Manipulator Buttons */
         new JoystickButton(munipulator, XboxController.Button.kA.value) // A = Intake 
-        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting));
-        // .onFalse(new StowNote(s_Arm, s_Intake));
+        .whileTrue(new IntakeNote(s_Intake, s_Arm, s_Lighting))
+        .onFalse(new StowNote(s_Arm, s_Intake));
         new JoystickButton(munipulator, XboxController.Button.kB.value) // B = Backup Intake
-        .whileTrue(new InnerIntakeNote(s_Intake, s_Arm, s_Lighting));
-        // .onFalse(new StowNote(s_Arm, s_Intake));
+        .whileTrue(new InnerIntakeNote(s_Intake, s_Arm, s_Lighting))
+        .onFalse(new StowNote(s_Arm, s_Intake));
         // new JoystickButton(munipulator, XboxController.Button.kLeftBumper.value) // LB = Shoot Trap
         // .whileTrue(new ShootTrap(s_Swerve, s_Intake, s_Arm));
         // new JoystickButton(munipulator, XboxController.Button.kRightBumper.value) // RB = Source Intake

@@ -32,9 +32,9 @@ public class PreClimbState extends Command {
   public void execute() {
     s_Intake.deployPlus();
     s_Climber.setClimberToClimbPos();
-    //if (s_Intake.intakePlusDeployed() == true) {
+    if (s_Intake.intakePlusDeployed() == true) {
       s_Arm.setArmPivotPos(ArmProfile.kpivotAmpPos, 38, 15);
-    //}
+    }
   }
 
   // Called once the command ends or is interrupted.

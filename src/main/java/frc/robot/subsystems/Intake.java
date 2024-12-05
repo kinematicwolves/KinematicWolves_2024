@@ -106,40 +106,40 @@ public class Intake extends SubsystemBase {
    * 
    * @return true if intake position is less than or equal to 1, otherwise false
    */
-  // public boolean intakePlusUndeployed() {
-  //   if (getFilteredWristPos() <= IntakeProfile.kInitialPos) {
-  //     return true;
-  //   }
-  //   else {
-  //     return false;
-  //   }
-  // }
+  public boolean intakePlusUndeployed() {
+    if (getFilteredWristPos() <= IntakeProfile.kInitialPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   /**
    * Checks if intake is in deployed position
    * 
    * @return true if encoder count is greater than or equal to 9, otherwise false
    */
-  // public boolean intakePlusDeployed() {
-  //   if (getFilteredWristPos() >= IntakeProfile.kDeployedPos) {
-  //     return true;
-  //   }
-  //   else {
-  //     return false;
-  //   }
-  // }
+  public boolean intakePlusDeployed() {
+    if (getFilteredWristPos() >= IntakeProfile.kDeployedPos) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   /**
    * Deploys plus plus with no roller output
    */
   public void deployPlus() {
-    //if (intakePlusDeployed() == true) {
+    if (intakePlusDeployed() == true) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kCoast);
-    //}
-    //else {
-      // setWristOutput(23);
-    //}
+    }
+    else {
+      setWristOutput(23);
+    }
   }
 
   /**
@@ -148,14 +148,14 @@ public class Intake extends SubsystemBase {
    * @param wristOutputFraction output fraction to bring intake back up
    */
   public void undeployPlus(double wristOutputPercent) {
-    //if (intakePlusUndeployed() == true) {
+    if (intakePlusUndeployed() == true) {
       setWristOutput(0);
       m_wrist.setIdleMode(IdleMode.kBrake);
-    //}
-    //else {
-      // setWristOutput(-wristOutputPercent);
-      // m_wrist.setIdleMode(IdleMode.kBrake);
-    //}
+    }
+    else {
+      setWristOutput(-wristOutputPercent);
+      m_wrist.setIdleMode(IdleMode.kBrake);
+    }
   }
 
   /**
@@ -177,11 +177,11 @@ public class Intake extends SubsystemBase {
    */
   public void intakePlusPlus(Arm s_Arm) {
     deployPlus();
-    //if (intakePlusDeployed() == true) {
+    if (intakePlusDeployed() == true) {
       setOuterRollerOutput(IntakeProfile.kOuterDefaultOutput);
       setInnerRollerOutput(IntakeProfile.kInnerDefaultOutput);
       s_Arm.setIndexorOuput(100);
-    //}
+    }
   }
 
   /**
@@ -190,14 +190,14 @@ public class Intake extends SubsystemBase {
    * @param s_Arm calls arm subsytem for conveyor control
    * @param s_Lighting calls lighting subsytem for intake status
    */
-  // public void smartIntakePlusPlus(Arm s_Arm, Intake s_Intake, Lighting s_Lighting) {
-  //   intakePlusPlus(s_Arm);
-  //   s_Lighting.setOrangeLightShow();
-  //   if (noteDetected() == true) {
-  //     resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
-  //     s_Lighting.setTeleOpLightShow();
-  //   }
-  // }
+  public void smartIntakePlusPlus(Arm s_Arm, Intake s_Intake, Lighting s_Lighting) {
+    intakePlusPlus(s_Arm);
+    s_Lighting.setOrangeLightShow();
+    if (noteDetected() == true) {
+      resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
+      s_Lighting.setTeleOpLightShow();
+    }
+  }
 
   /**
    * Intakes with inner intake only until note collected
@@ -255,7 +255,7 @@ public class Intake extends SubsystemBase {
     /** Sensor Readouts */
     SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());
     SmartDashboard.putBoolean("Note Detected", noteDetected());
-    //SmartDashboard.putBoolean("Intake+ is Deployed", intakePlusDeployed());
+    SmartDashboard.putBoolean("Intake+ is Deployed", intakePlusDeployed());
     SmartDashboard.putNumber("Raw Intake Position", throughBoreEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Intake Position", getFilteredWristPos());
   }

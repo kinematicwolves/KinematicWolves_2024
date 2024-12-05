@@ -29,7 +29,7 @@ public class AutoIntakePlus extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //s_Intake.intakePlusPlus(s_Arm);
+    s_Intake.intakePlusPlus(s_Arm);
     if (s_Intake.noteDetected() == true) {
       s_Intake.resetIntake(s_Arm, IntakeProfile.kWristDefaultOutput);
     }

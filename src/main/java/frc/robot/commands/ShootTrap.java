@@ -31,9 +31,9 @@ public class ShootTrap extends Command {
   public void execute() {
     s_Intake.deployPlus();
     s_Arm.setShooterOutput(50);
-    //if (s_Intake.intakePlusDeployed() == true) {
+    if (s_Intake.intakePlusDeployed() == true) {
     s_Arm.launchNoteAtSetPos(ArmProfile.kpivotTrapPos, 28, 15);
-    //}
+    }
   }
 
   // Called once the command ends or is interrupted.
